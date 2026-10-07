@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Aula 1 — Aluno — Fundamentos de IA para Marketing Digital</title>
+<style>
+:root{
+  --bg:#020806; --panel:rgba(3,24,16,.88); --panel2:rgba(5,35,23,.92);
+  --green:#21ff8b; --green2:#79ffb7; --text:#eafff2; --muted:#a5cbb6;
+  --line:rgba(33,255,139,.28); --red:#e30613; --yellow:#ffe26e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--text)}
+#matrix{position:fixed;inset:0;z-index:0;opacity:.28}
+.app{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column}
+header{
+ height:66px;padding:0 24px;display:flex;align-items:center;gap:16px;
+ background:rgba(0,8,5,.88);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)
+}
+.brand{background:var(--red);font-weight:900;font-size:21px;padding:9px 14px;letter-spacing:.7px}
+.titlebox b{display:block;font-size:16px}.titlebox span{font-size:11px;color:var(--muted)}
+.controls{margin-left:auto;display:flex;align-items:center;gap:9px}
+button{
+ border:1px solid var(--line);background:#062417;color:var(--text);padding:9px 13px;border-radius:7px;cursor:pointer;font-weight:700
+}
+button:hover{background:#0a3422}
+button.primary{background:#0c653a;border-color:#1cf07c}
+button:disabled{opacity:.35;cursor:not-allowed}
+main{position:relative;flex:1}
+.slide{
+ position:absolute;inset:0;padding:24px 36px 82px;overflow:auto;
+ opacity:0;transform:translateX(25px) scale(.99);pointer-events:none;transition:.25s ease
+}
+.slide.active{opacity:1;transform:none;pointer-events:auto}
+.panel{
+ max-width:1180px;margin:0 auto;background:linear-gradient(180deg,var(--panel2),var(--panel));
+ border:1px solid var(--line);box-shadow:0 0 55px rgba(0,255,120,.08);
+ border-radius:9px;padding:22px 24px
+}
+.panel.big{min-height:72vh}
+.kicker{font-size:12px;color:var(--green);letter-spacing:2px;text-transform:uppercase;font-weight:900;margin-bottom:10px}
+h1{font-size:clamp(34px,3.3vw,46px);line-height:1.06;margin:0 0 14px;overflow-wrap:break-word} h2{font-size:clamp(25px,2.45vw,33px);line-height:1.12;margin:0 0 14px;overflow-wrap:break-word}
+h3{font-size:18px;line-height:1.2;margin:0 0 7px;color:#fff;overflow-wrap:break-word}
+p{font-size:15.5px;line-height:1.42;margin:7px 0;color:#e3f7eb;overflow-wrap:break-word}
+.lead{font-size:19.5px;line-height:1.42;color:#fff;max-width:920px}
+.muted{color:var(--muted)}
+.grid{display:grid;gap:12px;min-width:0}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{
+ border:1px solid var(--line);background:rgba(0,15,9,.62);border-radius:8px;padding:14px;min-height:96px;min-width:0;overflow-wrap:break-word
+}
+.card strong{display:block;color:var(--green2);font-size:16px;line-height:1.2;margin-bottom:6px;overflow-wrap:break-word}
+.tag{display:inline-block;color:var(--green);border:1px solid var(--line);padding:5px 8px;border-radius:999px;font-size:11px;margin:2px 4px 2px 0}
+.quote{border-left:4px solid var(--green);background:rgba(0,0,0,.35);padding:12px 15px;font-size:18px;line-height:1.35;margin:14px 0;overflow-wrap:break-word}
+.note{border:1px dashed rgba(255,226,110,.45);background:rgba(55,48,0,.24);padding:10px 13px;border-radius:7px;color:#fff8c5;margin-top:10px;font-size:13px;line-height:1.35;overflow-wrap:break-word}
+.note b{color:var(--yellow)}
+.hero{display:grid;grid-template-columns:1.35fr .65fr;gap:28px;align-items:center;min-height:62vh}
+.ai-orb{
+ width:250px;height:250px;border-radius:50%;display:grid;place-items:center;margin:auto;
+ border:1px solid var(--green);box-shadow:0 0 80px rgba(33,255,139,.2),inset 0 0 55px rgba(33,255,139,.08);
+ position:relative;font-weight:900;font-size:70px;color:var(--green)
+}
+.ai-orb:before,.ai-orb:after{content:"";position:absolute;border:1px solid var(--line);border-radius:50%}
+.ai-orb:before{inset:35px}.ai-orb:after{inset:72px}
+.flow{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:14px}
+.flow .box{padding:10px 12px;background:#041b11;border:1px solid var(--line);border-radius:7px;font-weight:800;font-size:14px;overflow-wrap:break-word}
+.arrow{color:var(--green);font-size:25px}
+.timeline{position:relative;padding-left:33px}
+.timeline:before{content:"";position:absolute;left:11px;top:4px;bottom:4px;width:2px;background:rgba(33,255,139,.3)}
+.event{position:relative;margin:0 0 10px;padding:11px 14px;background:rgba(0,16,9,.72);border:1px solid var(--line);border-radius:7px}
+.event:before{content:"";position:absolute;left:-29px;top:18px;width:12px;height:12px;border-radius:50%;background:var(--green);box-shadow:0 0 15px var(--green)}
+.year{color:var(--green);font-weight:900;font-size:16px}
+.big{font-size:34px;color:var(--green);font-weight:900}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.term{font-size:26px;color:var(--green);font-weight:900}
+.example{border-top:1px solid var(--line);margin-top:10px;padding-top:10px;color:#d8efe2}
+.diagram{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;align-items:stretch;margin-top:14px}
+.diagram .stage{padding:11px;border:1px solid var(--line);background:#03190f;border-radius:7px;text-align:center}
+.practice{font-family:Consolas,monospace;white-space:pre-wrap;background:#000a05;border:1px solid var(--line);padding:12px;font-size:13px;line-height:1.35;overflow-wrap:anywhere;border-radius:7px;color:#dffdeb}
+.question{font-size:18px;line-height:1.35;margin-bottom:12px}.answers{display:grid;gap:9px}
+.answer{padding:10px 12px;font-size:14px;line-height:1.3;border:1px solid var(--line);background:#03190f;border-radius:7px;cursor:pointer}
+.answer:hover,.answer.selected{background:#074026;border-color:var(--green)}
+.result{font-size:42px;font-weight:900;color:var(--green)}
+footer{
+ position:absolute;bottom:0;left:0;right:0;height:66px;background:rgba(0,8,5,.93);border-top:1px solid var(--line);
+ display:flex;align-items:center;padding:0 24px;z-index:4
+}
+.progressWrap{width:280px}.progressInfo{font-size:10px;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:5px}
+.progress{height:5px;background:#092017;border-radius:99px;overflow:hidden}.bar{height:100%;background:var(--green);width:0}
+.nav{margin-left:auto;display:flex;gap:8px}.source{font-size:13px;color:#a9d8bd;margin-top:8px}
+.grid>*{min-width:0}
+.titlebox{min-width:0}.titlebox b,.titlebox span{overflow-wrap:break-word}
+.event,.stage,.box{min-width:0;overflow-wrap:break-word}
+.center{text-align:center}
+@media(max-height:800px) and (min-width:901px){
+  .slide{padding:18px 30px 76px}
+  .panel{padding:17px 19px}
+  .panel.big{min-height:68vh}
+  h1{font-size:38px} h2{font-size:27px}
+  p{font-size:14px;line-height:1.36}
+  .lead{font-size:17.5px}
+  .card{padding:11px;min-height:82px}
+  .card strong{font-size:15px}
+  .grid{gap:9px}
+  .quote{font-size:16px;padding:10px 13px;margin:10px 0}
+  .note{font-size:12px;padding:8px 11px;margin-top:8px}
+  .ai-orb{width:220px;height:220px;font-size:58px}
+  .event{padding:9px 12px;margin-bottom:7px}
+  .flow{margin-top:10px;gap:6px}
+  .flow .box{padding:8px 10px;font-size:13px}
+  .term{font-size:23px}.big{font-size:30px}
+}
+@media(max-width:900px){.g2,.g3,.g4,.hero,.compare,.diagram{grid-template-columns:1fr}.slide{padding:22px 18px 88px}h1{font-size:38px}.ai-orb{width:210px;height:210px}.progressWrap{display:none}}
+</style>
+</head>
+<body>
+<canvas id="matrix"></canvas>
+<div class="app" id="app">
+<header>
+  <div class="brand">SENAI</div>
+  <div class="titlebox"><b>IA aplicadas ao Marketing Digital</b><span>Aula 1 — História, conceitos e aplicações de Inteligência Artificial</span></div>
+  <div class="controls">
+<button id="fullscreenBtn">Tela cheia</button>
+  </div>
+</header>
+
+<main>
+<section class="slide active"><div class="panel big hero">
+  <div>
+    <div class="kicker">Aula 1 · Fundamentos</div>
+    <h1>Bem-vindo ao mundo da Inteligência Artificial</h1>
+    <p class="lead">Antes de usar IA para marketing, precisamos entender de onde ela veio, como aprende, o que consegue fazer e onde estão seus limites.</p>
+    <div class="quote">Pergunta de abertura: quantas vezes você acha que uma IA já tomou alguma decisão por você hoje?</div>
+  </div>
+  <div class="ai-orb">IA</div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Objetivos de aprendizagem</div><h2>Ao final desta aula, você deverá conseguir...</h2>
+  <div class="grid g3">
+    <div class="card"><strong>Definir IA</strong><p class="muted">Explicar em linguagem simples o que é Inteligência Artificial.</p></div>
+    <div class="card"><strong>Reconhecer a evolução</strong><p class="muted">Turing, Dartmouth, Deep Blue, Deep Learning, AlphaGo e AlphaFold.</p></div>
+    <div class="card"><strong>Distinguir conceitos</strong><p class="muted">IA, Machine Learning e Deep Learning.</p></div>
+    <div class="card"><strong>Identificar áreas</strong><p class="muted">Visão computacional, linguagem natural, sistemas especialistas, robótica e IA generativa.</p></div>
+    <div class="card"><strong>Diferenciar ANI, AGI e ASI</strong><p class="muted">Entender o que existe hoje e o que ainda é conceitual.</p></div>
+    <div class="card"><strong>Conectar com Marketing</strong><p class="muted">Conteúdo, personas, SEO, atendimento, análise e automação.</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">1. Conceito</div><h2>O que é Inteligência Artificial?</h2>
+  <div class="grid g2">
+    <div class="card"><strong>Em linguagem simples</strong>
+      <p>IA é um campo da computação que cria sistemas capazes de executar tarefas que normalmente associamos à inteligência humana: perceber, reconhecer padrões, aprender com exemplos, interpretar linguagem, prever resultados e gerar conteúdo.</p>
+    </div>
+    <div class="card"><strong>O que ela não é</strong>
+      <p>Não é uma “mente eletrônica” única. Existem técnicas diferentes, treinadas para objetivos diferentes. Algumas classificam imagens, outras recomendam produtos, outras geram texto.</p>
+    </div>
+  </div>
+  <div class="flow"><div class="box">Dados</div><div class="arrow">→</div><div class="box">Algoritmos</div><div class="arrow">→</div><div class="box">Modelo</div><div class="arrow">→</div><div class="box">Resposta / previsão</div></div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">1.1 Analogia prática</div><h2>Imagine um estagiário extremamente rápido</h2>
+  <div class="compare">
+    <div class="card"><div class="term">Pessoa</div><p>Aprende vendo exemplos, recebe instruções, comete erros, melhora com feedback e usa experiências anteriores.</p></div>
+    <div class="card"><div class="term">Modelo de IA</div><p>É treinado com dados, ajusta parâmetros, identifica padrões e produz respostas com base no que aprendeu.</p></div>
+  </div>
+  <div class="quote">A diferença é que a IA pode processar uma quantidade gigantesca de exemplos muito rapidamente — mas não significa que compreenda o mundo como um ser humano.</div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">1.2 Mapa da área</div><h2>“IA” é um guarda-chuva</h2>
+  <div class="grid g3">
+    <div class="card"><strong>Machine Learning</strong><p class="muted">Aprendizado a partir de dados.</p></div>
+    <div class="card"><strong>Deep Learning</strong><p class="muted">Redes neurais profundas, muito usadas em imagem, voz e linguagem.</p></div>
+    <div class="card"><strong>Visão Computacional</strong><p class="muted">Faz máquinas analisarem imagens e vídeos.</p></div>
+    <div class="card"><strong>Processamento de Linguagem Natural</strong><p class="muted">Trabalha com texto e fala.</p></div>
+    <div class="card"><strong>Robótica</strong><p class="muted">Combina percepção, decisão e ação física.</p></div>
+    <div class="card"><strong>Sistemas Especialistas</strong><p class="muted">Aplicam regras e conhecimento de um domínio.</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">2. Como a máquina aprende?</div><h2>IA ≠ Machine Learning ≠ Deep Learning</h2>
+  <div class="diagram">
+    <div class="stage"><div class="big">IA</div><p>Campo amplo</p></div>
+    <div class="stage"><div class="big">ML</div><p>Aprende padrões em dados</p></div>
+    <div class="stage"><div class="big">DL</div><p>Usa redes neurais profundas</p></div>
+    <div class="stage"><div class="big">GenAI</div><p>Gera novos conteúdos</p></div>
+  </div>
+  <div class="grid g3" style="margin-top:18px">
+    <div class="card"><strong>Aprendizado supervisionado</strong><p>Treina com exemplos que já têm resposta. Ex.: “esta mensagem é spam / não spam”.</p></div>
+    <div class="card"><strong>Não supervisionado</strong><p>Busca grupos e padrões sem resposta pronta. Ex.: segmentar clientes por comportamento.</p></div>
+    <div class="card"><strong>Por reforço</strong><p>Aprende por tentativa, recompensa e penalidade. Ex.: agentes em jogos.</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">3. Visão Computacional</div><h2>Como uma máquina “enxerga”?</h2>
+  <p class="lead">Para o computador, uma imagem começa como números. Redes neurais aprendem padrões nesses números.</p>
+  <div class="flow">
+    <div class="box">Pixels</div><div class="arrow">→</div><div class="box">Bordas e formas</div><div class="arrow">→</div><div class="box">Padrões</div><div class="arrow">→</div><div class="box">Objeto / classe</div>
+  </div>
+  <div class="grid g4" style="margin-top:20px">
+    <div class="card"><strong>Classificação</strong><p class="muted">“O que há nesta imagem?”</p></div>
+    <div class="card"><strong>Detecção</strong><p class="muted">“Onde está o objeto?”</p></div>
+    <div class="card"><strong>Segmentação</strong><p class="muted">“Quais pixels pertencem a cada objeto?”</p></div>
+    <div class="card"><strong>Reconhecimento de padrões</strong><p class="muted">Defeitos, placas, rostos, produtos, documentos.</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">4. Linguagem</div><h2>Processamento de Linguagem Natural e LLMs</h2>
+  <div class="grid g2">
+    <div class="card"><strong>PLN / NLP</strong><p>Área que permite ao computador trabalhar com linguagem humana: classificação de texto, tradução, análise de sentimento, resumo, voz e chatbots.</p></div>
+    <div class="card"><strong>LLM</strong><p>Large Language Model: modelo treinado em grandes volumes de texto para aprender relações estatísticas da linguagem e produzir sequências de palavras.</p></div>
+  </div>
+  <div class="quote">Um chatbot moderno não procura simplesmente uma resposta pronta em um banco de frases: ele gera uma resposta a partir de padrões aprendidos.</div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">5. Breve história da IA</div><h2>1950 — Alan Turing muda a pergunta</h2>
+  <div class="grid g2">
+    <div class="card"><strong>“Can machines think?”</strong><p>Em 1950, Alan Turing publicou <em>Computing Machinery and Intelligence</em> e propôs o “jogo da imitação”, que ficou conhecido como Teste de Turing.</p></div>
+    <div class="card"><strong>Por que isso importa?</strong><p>Turing transformou uma pergunta filosófica difícil em uma situação observável: uma máquina consegue apresentar comportamento conversacional que uma pessoa não distingue facilmente de outro humano?</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">História</div><h2>1956 — Dartmouth: nasce o nome “Inteligência Artificial”</h2>
+  <div class="timeline">
+    <div class="event"><div class="year">1956</div><h3>Dartmouth Summer Research Project</h3><p>John McCarthy e outros pesquisadores reuniram especialistas para investigar a possibilidade de simular aspectos da inteligência em máquinas. O evento é uma referência para o nascimento da IA como campo de estudo.</p></div>
+    <div class="event"><div class="year">Ideia central</div><p>Aprendizado, raciocínio, linguagem e outros aspectos da inteligência poderiam ser descritos de forma suficientemente precisa para serem simulados por máquinas.</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">História</div><h2>1997 — IBM Deep Blue derrota Garry Kasparov</h2>
+  <div class="grid g2">
+    <div class="card"><strong>O marco</strong><p>O Deep Blue tornou-se o primeiro sistema computacional a derrotar um campeão mundial de xadrez vigente em uma partida oficial por match.</p></div>
+    <div class="card"><strong>O detalhe que ensina muito</strong><p>Deep Blue não era um LLM e não aprendia como os modelos atuais. Seu poder vinha principalmente de busca, avaliação de posições, bases de partidas e enorme capacidade de processamento.</p></div>
+  </div>
+  <div class="quote">Ele conseguia avaliar cerca de 200 milhões de posições de xadrez por segundo.</div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">História</div><h2>2011 — IBM Watson vence no Jeopardy!</h2>
+  <div class="grid g2">
+    <div class="card"><strong>O desafio</strong><p>O jogo exige interpretar perguntas cheias de pistas, ambiguidades e linguagem natural — algo diferente de calcular jogadas de xadrez.</p></div>
+    <div class="card"><strong>Por que entra na aula?</strong><p>É um bom ponto para mostrar a evolução de sistemas baseados em busca e regras para sistemas capazes de lidar melhor com linguagem e grandes volumes de informação.</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">História</div><h2>2012 — Deep Learning muda a Visão Computacional</h2>
+  <p class="lead">A competição ImageNet ajudou a mostrar o salto de desempenho obtido com redes neurais profundas no reconhecimento de imagens.</p>
+  <div class="grid g3">
+    <div class="card"><strong>Muitos dados</strong><p class="muted">Grandes bases de imagens rotuladas.</p></div>
+    <div class="card"><strong>GPUs</strong><p class="muted">Processamento paralelo acelerou o treinamento.</p></div>
+    <div class="card"><strong>Redes profundas</strong><p class="muted">Aprendiam automaticamente representações úteis.</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">História</div><h2>2016 — AlphaGo e o aprendizado por reforço</h2>
+  <div class="grid g2">
+    <div class="card"><strong>Go é muito mais complexo que xadrez em número de possibilidades</strong><p>O AlphaGo, da DeepMind, derrotou Lee Sedol em 2016 e mostrou o poder da combinação entre redes neurais, busca e aprendizado por reforço.</p></div>
+    <div class="card"><strong>O que explicar ao aluno</strong><p>A máquina não recebeu uma lista com todas as jogadas possíveis. Ela aprendeu padrões de jogo e estratégias a partir de dados e treinamento.</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">História · Ciência</div><h2>2020–2022 — AlphaFold acelera a previsão de estruturas de proteínas</h2>
+  <div class="card">
+    <strong>AlphaFold e proteínas</strong>
+    <p>O AlphaFold usa IA para prever a estrutura tridimensional de proteínas a partir de sequências. Métodos experimentais para determinar uma única estrutura podem levar muito tempo; o AlphaFold tornou possíveis previsões em escala enorme.</p>
+  </div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card"><strong>2020</strong><p>O AlphaFold foi reconhecido como uma solução de enorme avanço para o problema de previsão de estrutura de proteínas.</p></div>
+    <div class="card"><strong>2022</strong><p>A base foi expandida para mais de 200 milhões de previsões de estruturas, cobrindo quase todas as proteínas catalogadas conhecidas à época.</p></div>
+  </div>
+  <div class="quote">Esse exemplo mostra o que muda quando IA deixa de apenas automatizar uma tarefa e começa a acelerar descoberta científica.</div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">6. IA Generativa</div><h2>De reconhecer padrões a criar conteúdo</h2>
+  <div class="grid g4">
+    <div class="card"><strong>Texto</strong><p class="muted">Chat, resumo, roteiro, anúncio, análise.</p></div>
+    <div class="card"><strong>Imagem</strong><p class="muted">Criação, edição, variações e conceito visual.</p></div>
+    <div class="card"><strong>Áudio</strong><p class="muted">Voz, música e efeitos.</p></div>
+    <div class="card"><strong>Vídeo</strong><p class="muted">Cena, animação, edição e geração.</p></div>
+  </div>
+  <div class="quote">A IA generativa não “copia e cola” uma resposta específica: ela produz uma nova saída a partir de padrões aprendidos durante o treinamento e do contexto fornecido.</div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">7. Tipos de IA</div><h2>ANI, AGI e ASI</h2>
+  <div class="grid g3">
+    <div class="card"><div class="term">ANI</div><strong>Inteligência Artificial Limitada</strong><p>Executa tarefas específicas. Sistemas atuais entram essencialmente nessa categoria.</p><div class="example">Ex.: recomendação, visão, tradução, chatbots, geração de conteúdo.</div></div>
+    <div class="card"><div class="term">AGI</div><strong>Inteligência Artificial Geral</strong><p>Conceito de um sistema capaz de desempenhar amplamente tarefas intelectuais em diferentes domínios.</p><div class="example">Não é uma categoria de sistema comprovadamente alcançada.</div></div>
+    <div class="card"><div class="term">ASI</div><strong>Superinteligência Artificial</strong><p>Conceito hipotético de uma inteligência superior à humana em grande variedade de tarefas.</p><div class="example">Tema teórico e prospectivo.</div></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">8. IA no cotidiano</div><h2>Você já usa IA mesmo sem abrir um chatbot</h2>
+  <div class="grid g4">
+    <div class="card"><strong>Recomendações</strong><p class="muted">Vídeos, músicas, produtos e conteúdo.</p></div>
+    <div class="card"><strong>Mapas e rotas</strong><p class="muted">Previsão de trânsito e escolha de caminhos.</p></div>
+    <div class="card"><strong>Fraude e segurança</strong><p class="muted">Identificação de comportamentos fora do padrão.</p></div>
+    <div class="card"><strong>Câmeras e imagens</strong><p class="muted">Detecção de objetos, OCR e reconhecimento.</p></div>
+    <div class="card"><strong>Filtros de spam</strong><p class="muted">Classificação automática de mensagens.</p></div>
+    <div class="card"><strong>Assistentes</strong><p class="muted">Voz, texto e busca.</p></div>
+    <div class="card"><strong>Tradução</strong><p class="muted">Texto, áudio e legendas.</p></div>
+    <div class="card"><strong>Publicidade</strong><p class="muted">Segmentação, previsão e personalização.</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">9. IA aplicada ao Marketing Digital</div><h2>Agora o conteúdo começa a se conectar diretamente com o curso</h2>
+  <div class="grid g3">
+    <div class="card"><strong>Persona e público</strong><p class="muted">Organizar hipóteses, dores, objetivos e comportamento.</p></div>
+    <div class="card"><strong>Conteúdo</strong><p class="muted">Ideias, roteiros, posts, imagens, vídeo e áudio.</p></div>
+    <div class="card"><strong>SEO</strong><p class="muted">Intenção de busca, palavras-chave e estrutura de conteúdo.</p></div>
+    <div class="card"><strong>Inbound</strong><p class="muted">Atrair, converter, relacionar e encantar.</p></div>
+    <div class="card"><strong>Atendimento</strong><p class="muted">Chatbots, respostas e triagem.</p></div>
+    <div class="card"><strong>Análise</strong><p class="muted">Identificar padrões e transformar dados em informação.</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">10. Limites e responsabilidade</div><h2>IA também erra</h2>
+  <div class="grid g3">
+    <div class="card"><strong>Alucinação</strong><p class="muted">Pode gerar informação convincente, mas incorreta.</p></div>
+    <div class="card"><strong>Viés</strong><p class="muted">Dados e decisões de projeto podem reproduzir distorções.</p></div>
+    <div class="card"><strong>Privacidade</strong><p class="muted">Não devemos enviar dados sensíveis sem avaliar regras e contexto.</p></div>
+    <div class="card"><strong>Contexto insuficiente</strong><p class="muted">Pedido ruim tende a produzir resultado genérico.</p></div>
+    <div class="card"><strong>Verificação humana</strong><p class="muted">Decisões relevantes precisam de conferência.</p></div>
+    <div class="card"><strong>Ferramenta ≠ especialista</strong><p class="muted">A IA pode apoiar trabalho profissional, não eliminar responsabilidade.</p></div>
+  </div>
+</div></section>
+
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Prática · Desafio 1</div><h2>Domando o Prompt</h2>
+  <p class="lead">Objetivo: perceber, na prática, como contexto, objetivo, processo, formato e restrições mudam a qualidade de uma resposta de IA.</p>
+  <div class="grid g3" style="margin-top:16px">
+    <div class="card"><strong>1. Testar</strong><p class="muted">Começar com um pedido propositalmente genérico.</p></div>
+    <div class="card"><strong>2. Estruturar</strong><p class="muted">Usar um prompt com papel, contexto, perguntas e formato.</p></div>
+    <div class="card"><strong>3. Verificar</strong><p class="muted">Checar quando a IA apresenta fatos, números ou tendências.</p></div>
+  </div>
+  <div class="quote">A meta não é “achar o melhor nicho”. A meta é entender por que uma instrução melhor produz uma resposta mais útil.</div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Etapa 1 · Prompt genérico</div><h2>Comece com uma instrução fraca de propósito</h2>
+  <div class="practice">Me indique um nicho para eu trabalhar na internet.</div>
+  <div class="grid g4" style="margin-top:16px">
+    <div class="card"><strong>Execute</strong><p class="muted">Cole exatamente esse texto na IA.</p></div>
+    <div class="card"><strong>Leia</strong><p class="muted">Não refine ainda. Observe a primeira resposta.</p></div>
+    <div class="card"><strong>Registre</strong><p class="muted">Copie ou salve a resposta recebida.</p></div>
+    <div class="card"><strong>Não discuta ainda</strong><p class="muted">Primeiro vamos analisar o que faltou na instrução.</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Checkpoint</div><h2>Por que a resposta ficou genérica?</h2>
+  <div class="grid g2">
+    <div class="card"><strong>A IA conhece seus gostos?</strong><p class="muted">Ela recebeu alguma informação sobre interesses, conhecimentos ou experiências?</p></div>
+    <div class="card"><strong>Ela conhece seu objetivo?</strong><p class="muted">Sabe se você quer vender produto, prestar serviço, criar conteúdo ou atuar como afiliado?</p></div>
+    <div class="card"><strong>Ela recebeu critérios?</strong><p class="muted">Há alguma regra sobre investimento, experiência, dificuldade ou tipo de mercado?</p></div>
+    <div class="card"><strong>Ela sabe como entregar?</strong><p class="muted">Você pediu comparação, tabela, justificativa, riscos ou próximos passos?</p></div>
+  </div>
+  <div class="quote">Entrada vaga → muitas possibilidades → resposta genérica.</div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Etapa 2 · Prompt estruturado</div><h2>Agora vamos obrigar a IA a conhecer o contexto antes de recomendar</h2>
+  <div class="practice">Você será um assistente de análise de oportunidades.
+
+Sua tarefa é me ajudar a identificar possíveis nichos de interesse com base nas minhas características.
+
+Antes de recomendar qualquer coisa, faça 5 perguntas, UMA POR VEZ, para descobrir:
+- assuntos de que eu gosto;
+- conhecimentos que já possuo;
+- habilidades;
+- experiências profissionais ou pessoais;
+- tipos de produto ou serviço que eu teria interesse em trabalhar.
+
+Espere minha resposta antes de fazer a próxima pergunta.</div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Etapa 2 · Continuação</div><h2>Defina também o formato e as restrições da resposta</h2>
+  <div class="practice">Depois das 5 respostas:
+
+1. Identifique 3 possíveis nichos compatíveis com meu perfil.
+2. Explique por que cada nicho combina comigo.
+3. Mostre uma oportunidade de produto ou serviço para cada um.
+4. Aponte uma possível dificuldade de cada nicho.
+5. Não invente informações sobre mim.
+6. Se faltar alguma informação importante, pergunte antes de concluir.
+
+Apresente o resultado em uma tabela simples com:
+NICHO | POR QUE COMBINA | OPORTUNIDADE | DIFICULDADE</div>
+  <div class="quote">Agora execute o prompt completo e compare com a resposta da Etapa 1.</div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Anatomia do Prompt</div><h2>Encontre estas 6 partes no prompt</h2>
+  <div class="grid g3">
+    <div class="card"><strong>Papel</strong><p class="muted">“Você será um assistente de análise...”</p></div>
+    <div class="card"><strong>Objetivo</strong><p class="muted">Identificar nichos compatíveis com o perfil.</p></div>
+    <div class="card"><strong>Contexto</strong><p class="muted">Gostos, conhecimentos, habilidades e experiências.</p></div>
+    <div class="card"><strong>Processo</strong><p class="muted">Fazer 5 perguntas antes de concluir.</p></div>
+    <div class="card"><strong>Formato</strong><p class="muted">Entregar em tabela comparativa.</p></div>
+    <div class="card"><strong>Restrições</strong><p class="muted">Não inventar dados e perguntar quando faltar contexto.</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Etapa 3 · Verificação</div><h2>Agora provoque a IA: ela consegue comprovar o que acabou de afirmar?</h2>
+  <div class="practice">Para os nichos que você recomendou, informe quais dados atuais comprovam que existe demanda no Brasil.
+
+Para cada afirmação:
+- diferencie FATO de HIPÓTESE;
+- informe a fonte;
+- informe o ano do dado;
+- não invente números;
+- quando não houver evidência suficiente, escreva: "PRECISA SER PESQUISADO".</div>
+  <div class="grid g3" style="margin-top:16px">
+    <div class="card"><strong>Fonte existe?</strong><p class="muted">O link, instituição ou estudo é identificável?</p></div>
+    <div class="card"><strong>Dado é atual?</strong><p class="muted">O ano faz sentido para a pergunta?</p></div>
+    <div class="card"><strong>Fato ou inferência?</strong><p class="muted">A IA deixou claro quando está apenas deduzindo?</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Ficha de comparação</div><h2>Registre o que mudou entre os dois testes</h2>
+  <div class="practice">PROMPT 1 — GENÉRICO
+O que a IA respondeu?
+____________________________________________________
+
+PROMPT 2 — ESTRUTURADO
+O que mudou na resposta?
+____________________________________________________
+
+Anote 3 diferenças:
+1. _________________________________________________
+2. _________________________________________________
+3. _________________________________________________
+
+Uma informação que precisou ser verificada:
+____________________________________________________
+
+Uma pergunta que eu acrescentaria para melhorar ainda mais o prompt:
+____________________________________________________</div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Entrega da prática</div><h2>O que cada aluno ou dupla deve apresentar</h2>
+  <div class="grid g4">
+    <div class="card"><strong>1. Prompt inicial</strong><p class="muted">E um trecho da resposta genérica.</p></div>
+    <div class="card"><strong>2. Prompt estruturado</strong><p class="muted">E um trecho da resposta melhorada.</p></div>
+    <div class="card"><strong>3. Três diferenças</strong><p class="muted">O que ficou mais específico, útil ou organizado.</p></div>
+    <div class="card"><strong>4. Uma verificação</strong><p class="muted">Um dado, tendência ou afirmação que exigiu checagem.</p></div>
+  </div>
+  <div class="quote">Pergunta final: a IA ficou mais inteligente — ou nós aprendemos a dar uma instrução melhor?</div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Revisão</div><h2>Mapa mental da aula</h2>
+  <div class="flow">
+    <div class="box">Turing</div><div class="arrow">→</div><div class="box">Dartmouth</div><div class="arrow">→</div><div class="box">Deep Blue</div><div class="arrow">→</div><div class="box">Deep Learning</div><div class="arrow">→</div><div class="box">AlphaGo</div><div class="arrow">→</div><div class="box">AlphaFold</div><div class="arrow">→</div><div class="box">IA Generativa</div>
+  </div>
+  <div class="grid g3" style="margin-top:20px">
+    <div class="card"><strong>Conceitos</strong><p class="muted">IA, ML, Deep Learning, LLM.</p></div>
+    <div class="card"><strong>Áreas</strong><p class="muted">Visão, linguagem, robótica, sistemas especialistas.</p></div>
+    <div class="card"><strong>Aplicação</strong><p class="muted">Marketing, conteúdo, SEO, análise e automação.</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Quiz final</div><h2>Vamos testar?</h2>
+  <div id="quizArea"></div>
+  <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:15px">
+    <button id="quizPrev">Anterior</button><button class="primary" id="quizNext">Próxima</button>
+  </div>
+</div></section>
+
+<section class="slide"><div class="panel big center">
+  <div class="kicker">Conclusão</div><h1>Aula 1 concluída</h1>
+  <p class="lead" style="margin:0 auto 20px">Agora o aluno tem base para entender por que Engenharia de Prompt, personas, Inbound, SEO e produção com IA aparecem no restante do curso.</p>
+  <div id="scoreBox"></div>
+  <div class="quote" style="text-align:left">Próxima aula: fundamentos do Marketing Digital e evolução do Marketing.</div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Referências</div><h2>Fontes usadas para aprofundar a aula</h2>
+  <div class="timeline">
+    <div class="event"><strong>Ficha do curso SENAI</strong><p>Conteúdo programático: história e conceitos, Dartmouth ao Deep Learning, ANI/AGI/ASI, IA generativa e LLMs.</p></div>
+    <div class="event"><strong>Dartmouth College</strong><p>Histórico do Dartmouth Summer Research Project on Artificial Intelligence.</p></div>
+    <div class="event"><strong>IBM</strong><p>História do Deep Blue e material histórico sobre IA.</p></div>
+    <div class="event"><strong>Google DeepMind</strong><p>AlphaGo e AlphaFold, incluindo a base com mais de 200 milhões de previsões de estruturas de proteínas.</p></div>
+    <div class="event"><strong>ImageNet</strong><p>ImageNet Large Scale Visual Recognition Challenge.</p></div>
+  </div>
+</div></section>
+</main>
+
+<footer>
+  <div class="progressWrap">
+    <div class="progressInfo"><span id="slideCounter"></span><span id="pct"></span></div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+  </div>
+  <div class="nav"><button id="prev">← Anterior</button><button class="primary" id="next">Próximo →</button></div>
+</footer>
+</div>
+
+<script>
+// Matrix background
+const canvas=document.getElementById('matrix'),ctx=canvas.getContext('2d');
+let drops=[],fontSize=15;
+function resize(){
+ canvas.width=innerWidth;canvas.height=innerHeight;
+ const cols=Math.floor(canvas.width/fontSize);drops=Array(cols).fill(1).map(()=>Math.random()*-60);
+}
+function drawMatrix(){
+ ctx.fillStyle='rgba(0,8,5,.075)';ctx.fillRect(0,0,canvas.width,canvas.height);
+ ctx.fillStyle='#19e978';ctx.font=fontSize+'px monospace';
+ const chars='01アイウエオカキクケコAI';
+ drops.forEach((y,i)=>{
+   const t=chars[Math.floor(Math.random()*chars.length)];
+   ctx.fillText(t,i*fontSize,y*fontSize);
+   if(y*fontSize>canvas.height && Math.random()>.975)drops[i]=0;
+   drops[i]++;
+ });
+ requestAnimationFrame(drawMatrix);
+}
+resize();addEventListener('resize',resize);drawMatrix();
+
+// Slides
+const slides=[...document.querySelectorAll('.slide')];let current=0;
+const prev=document.getElementById('prev'),next=document.getElementById('next');
+function show(i){
+ current=Math.max(0,Math.min(i,slides.length-1));
+ slides.forEach((s,n)=>s.classList.toggle('active',n===current));
+ document.getElementById('slideCounter').textContent=`${current+1} / ${slides.length}`;
+ const p=Math.round(current/(slides.length-1)*100);
+ document.getElementById('pct').textContent=p+'%';
+ document.getElementById('bar').style.width=p+'%';
+ prev.disabled=current===0;next.textContent=current===slides.length-1?'Voltar ao início ↺':'Próximo →';
+}
+prev.onclick=()=>show(current-1);next.onclick=()=>current===slides.length-1?show(0):show(current+1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')show(current+1);if(e.key==='ArrowLeft')show(current-1)});
+
+// teacher mode/fullscreen
+document.getElementById('fullscreenBtn').onclick=()=>{
+ if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen();
+};
+
+// Quiz
+const quiz=[
+ {q:'Qual foi a contribuição de Alan Turing usada como marco nesta aula?',a:['Criou o Deep Blue','Propôs o jogo da imitação / Teste de Turing','Criou o termo Machine Learning','Criou o AlphaFold'],c:1},
+ {q:'O que aconteceu em Dartmouth em 1956?',a:['O termo Inteligência Artificial foi consolidado em um projeto de pesquisa','O primeiro chatbot foi lançado','O Deep Blue venceu Kasparov','Foi criado o Google'],c:0},
+ {q:'O Deep Blue é um bom exemplo para mostrar que...',a:['Toda IA usa LLM','IA sempre precisa de internet','IA não é sinônimo de Machine Learning','Xadrez é visão computacional'],c:2},
+ {q:'Visão computacional trabalha principalmente com...',a:['Imagens e vídeos','Somente números financeiros','Apenas textos','Planilhas'],c:0},
+ {q:'Machine Learning é...',a:['Um tipo de monitor','Uma abordagem em que modelos aprendem padrões a partir de dados','Um sinônimo de internet','Uma linguagem de programação'],c:1},
+ {q:'Deep Learning é fortemente associado a...',a:['Redes neurais profundas','Somente regras manuais','Impressoras 3D','Bancos de dados relacionais'],c:0},
+ {q:'O AlphaFold ficou conhecido por...',a:['Mapear redes sociais','Prever estruturas 3D de proteínas','Criar anúncios','Ganhar no xadrez'],c:1},
+ {q:'ANI representa...',a:['IA limitada a tarefas específicas','Superinteligência comprovada','IA geral já existente','Um tipo de SEO'],c:0},
+ {q:'Um LLM é...',a:['Um modelo de linguagem de grande escala','Uma câmera inteligente','Um banco de imagens','Um processador'],c:0},
+ {q:'Qual opção é aplicação de IA em Marketing Digital?',a:['Personas, conteúdo, SEO e análise','Troca de memória RAM','Crimpagem de cabo','Configuração de BIOS'],c:0},
+ {q:'Qual risco precisa ser lembrado ao usar IA generativa?',a:['Alucinações e informações incorretas','A IA nunca responde texto','Ela não aceita contexto','Ela só funciona com imagens'],c:0},
+ {q:'Por que o prompt mais detalhado tende a ser melhor?',a:['Porque contém contexto, objetivo, público e formato','Porque sempre tem mais palavras','Porque usa termos técnicos','Porque elimina a necessidade de revisão'],c:0}
+];
+let qi=0,answers=Array(quiz.length).fill(null);
+const area=document.getElementById('quizArea'),qprev=document.getElementById('quizPrev'),qnext=document.getElementById('quizNext');
+function renderQuiz(){
+ const x=quiz[qi];
+ area.innerHTML=`<div class="question"><b>Questão ${qi+1}/${quiz.length}</b><br>${x.q}</div>
+ <div class="answers">${x.a.map((v,i)=>`<div class="answer ${answers[qi]===i?'selected':''}" data-i="${i}">${String.fromCharCode(65+i)}. ${v}</div>`).join('')}</div>`;
+ area.querySelectorAll('.answer').forEach(el=>el.onclick=()=>{answers[qi]=+el.dataset.i;renderQuiz()});
+ qprev.disabled=qi===0;qnext.textContent=qi===quiz.length-1?'Ver resultado':'Próxima';
+}
+qprev.onclick=()=>{if(qi>0){qi--;renderQuiz()}};
+qnext.onclick=()=>{
+ if(answers[qi]===null){alert('Selecione uma resposta.');return}
+ if(qi<quiz.length-1){qi++;renderQuiz();return}
+ const score=quiz.reduce((s,x,i)=>s+(answers[i]===x.c?1:0),0);
+ document.getElementById('scoreBox').innerHTML=`<div class="card"><div class="result">${score}/${quiz.length}</div><p>Aproveitamento: ${Math.round(score/quiz.length*100)}%</p></div>`;
+ show(slides.length-2);
+};
+renderQuiz();show(0);
+</script>
+</body>
+</html>
