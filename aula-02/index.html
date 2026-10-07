@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Aula 2 — Aluno — Fundamentos do Marketing Digital</title>
+<style>
+:root{
+  --bg:#020806; --panel:rgba(3,24,16,.90); --panel2:rgba(5,35,23,.94);
+  --green:#21ff8b; --green2:#79ffb7; --text:#eafff2; --muted:#a5cbb6;
+  --line:rgba(33,255,139,.28); --red:#e30613; --yellow:#ffe26e; --pink:#ff4e91;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--text)}
+#matrix{position:fixed;inset:0;z-index:0;opacity:.24}
+.app{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column}
+header{
+ height:66px;padding:0 24px;display:flex;align-items:center;gap:16px;
+ background:rgba(0,8,5,.9);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)
+}
+.brand{background:var(--red);font-weight:900;font-size:21px;padding:9px 14px;letter-spacing:.7px}
+.titlebox{min-width:0}.titlebox b{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.titlebox span{font-size:11px;color:var(--muted)}
+.controls{margin-left:auto;display:flex;align-items:center;gap:9px;flex:0 0 auto}
+button{
+ border:1px solid var(--line);background:#062417;color:var(--text);padding:9px 13px;border-radius:7px;cursor:pointer;font-weight:700
+}
+button:hover{background:#0a3422}
+button.primary{background:#0c653a;border-color:#1cf07c}
+button:disabled{opacity:.35;cursor:not-allowed}
+main{position:relative;flex:1}
+.slide{
+ position:absolute;inset:0;padding:24px 36px 82px;overflow:auto;
+ opacity:0;transform:translateX(25px) scale(.99);pointer-events:none;transition:.25s ease
+}
+.slide.active{opacity:1;transform:none;pointer-events:auto}
+.panel{
+ max-width:1180px;margin:0 auto;background:linear-gradient(180deg,var(--panel2),var(--panel));
+ border:1px solid var(--line);box-shadow:0 0 55px rgba(0,255,120,.08);
+ border-radius:9px;padding:22px 24px
+}
+.panel.big{min-height:72vh}
+.kicker{font-size:12px;color:var(--green);letter-spacing:2px;text-transform:uppercase;font-weight:900;margin-bottom:10px}
+h1{font-size:clamp(32px,3.25vw,46px);line-height:1.05;margin:0 0 14px;overflow-wrap:break-word}
+h2{font-size:clamp(24px,2.35vw,33px);line-height:1.12;margin:0 0 14px;overflow-wrap:break-word}
+h3{font-size:18px;line-height:1.2;margin:0 0 7px;color:#fff;overflow-wrap:break-word}
+p{font-size:15.5px;line-height:1.42;margin:7px 0;color:#e3f7eb;overflow-wrap:break-word}
+.lead{font-size:19.5px;line-height:1.42;color:#fff;max-width:920px}
+.muted{color:var(--muted)}
+.small{font-size:12.5px;line-height:1.35;color:var(--muted)}
+.grid{display:grid;gap:12px;min-width:0}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{
+ border:1px solid var(--line);background:rgba(0,15,9,.62);border-radius:8px;padding:14px;min-height:96px;min-width:0;overflow-wrap:break-word
+}
+.card strong{display:block;color:var(--green2);font-size:16px;line-height:1.2;margin-bottom:6px;overflow-wrap:break-word}
+.card .value{font-size:clamp(29px,3vw,42px);font-weight:900;color:var(--green);line-height:1;margin-bottom:7px}
+.tag{display:inline-block;color:var(--green);border:1px solid var(--line);padding:5px 8px;border-radius:999px;font-size:11px;margin:2px 4px 2px 0}
+.quote{border-left:4px solid var(--green);background:rgba(0,0,0,.35);padding:12px 15px;font-size:18px;line-height:1.35;margin:14px 0;overflow-wrap:break-word}
+.note{border:1px dashed rgba(255,226,110,.45);background:rgba(55,48,0,.24);padding:10px 13px;border-radius:7px;color:#fff8c5;margin-top:10px;font-size:13px;line-height:1.35;overflow-wrap:break-word}
+.note b{color:var(--yellow)}
+.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:28px;align-items:center;min-height:62vh}
+.marketing-orb{
+ width:250px;height:250px;border-radius:50%;display:grid;place-items:center;margin:auto;
+ border:1px solid var(--green);box-shadow:0 0 80px rgba(33,255,139,.2),inset 0 0 55px rgba(33,255,139,.08);
+ position:relative;font-weight:900;font-size:50px;color:var(--green);text-align:center
+}
+.marketing-orb:before,.marketing-orb:after{content:"";position:absolute;border:1px solid var(--line);border-radius:50%}
+.marketing-orb:before{inset:35px}.marketing-orb:after{inset:72px}
+.flow{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:14px}
+.flow .box{padding:10px 12px;background:#041b11;border:1px solid var(--line);border-radius:7px;font-weight:800;font-size:14px;overflow-wrap:break-word}
+.arrow{color:var(--green);font-size:25px}
+.timeline{position:relative;padding-left:33px}
+.timeline:before{content:"";position:absolute;left:11px;top:4px;bottom:4px;width:2px;background:rgba(33,255,139,.3)}
+.event{position:relative;margin:0 0 10px;padding:11px 14px;background:rgba(0,16,9,.72);border:1px solid var(--line);border-radius:7px}
+.event:before{content:"";position:absolute;left:-29px;top:18px;width:12px;height:12px;border-radius:50%;background:var(--green);box-shadow:0 0 15px var(--green)}
+.year{color:var(--green);font-weight:900;font-size:16px}
+.big{font-size:34px;color:var(--green);font-weight:900}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.term{font-size:25px;color:var(--green);font-weight:900}
+.example{border-top:1px solid var(--line);margin-top:10px;padding-top:10px;color:#d8efe2}
+.diagram{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;align-items:stretch;margin-top:14px}
+.diagram .stage{padding:11px;border:1px solid var(--line);background:#03190f;border-radius:7px;text-align:center}
+.practice{font-family:Consolas,monospace;white-space:pre-wrap;background:#000a05;border:1px solid var(--line);padding:12px;font-size:13px;line-height:1.35;overflow-wrap:anywhere;border-radius:7px;color:#dffdeb}
+.barlist{display:grid;gap:11px;margin-top:12px}
+.barrow{display:grid;grid-template-columns:150px 1fr 70px;gap:10px;align-items:center;font-size:13px}
+.track{height:16px;background:#07150f;border:1px solid rgba(33,255,139,.2);border-radius:999px;overflow:hidden}
+.fill{height:100%;background:linear-gradient(90deg,#0c8b4b,var(--green));border-radius:999px}
+.statline{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.pyramid{display:grid;gap:6px;max-width:880px;margin:12px auto 0}
+.level{margin:auto;padding:10px 14px;text-align:center;border:1px solid var(--line);background:#03190f;border-radius:7px;font-weight:800}
+.level:nth-child(1){width:100%}.level:nth-child(2){width:88%}.level:nth-child(3){width:76%}.level:nth-child(4){width:64%}
+.level:nth-child(5){width:52%}.level:nth-child(6){width:40%}.level:nth-child(7){width:30%}
+.question{font-size:20px;margin-bottom:14px}.answers{display:grid;gap:9px}
+.answer{padding:12px 14px;border:1px solid var(--line);background:#03190f;border-radius:7px;cursor:pointer}
+.answer:hover,.answer.selected{background:#074026;border-color:var(--green)}
+.result{font-size:42px;font-weight:900;color:var(--green)}
+footer{
+ position:absolute;bottom:0;left:0;right:0;height:66px;background:rgba(0,8,5,.94);border-top:1px solid var(--line);
+ display:flex;align-items:center;padding:0 24px;z-index:4
+}
+.progressWrap{width:280px}.progressInfo{font-size:10px;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:5px}
+.progress{height:5px;background:#092017;border-radius:99px;overflow:hidden}.bar{height:100%;background:var(--green);width:0}
+.nav{margin-left:auto;display:flex;gap:8px}
+.teacher-only{display:none}.teacher-mode .teacher-only{display:block}
+.center{text-align:center}
+.source{font-size:11px;color:#86b89b;margin-top:8px}
+.warning{border-left:4px solid var(--yellow);background:rgba(70,56,0,.26);padding:11px 14px;border-radius:6px;margin:12px 0}
+@media(max-width:900px){
+ .g2,.g3,.g4,.hero,.compare,.diagram,.statline{grid-template-columns:1fr}
+ .slide{padding:20px 16px 82px}.marketing-orb{width:200px;height:200px;font-size:40px}
+ .progressWrap{display:none}.barrow{grid-template-columns:100px 1fr 55px}
+}
+@media(max-height:760px){
+ .slide{padding-top:16px}.panel{padding:16px 18px}.panel.big{min-height:auto}
+ p{font-size:14px}.lead{font-size:18px}.card{padding:11px;min-height:82px}
+ h1{font-size:clamp(30px,3vw,41px)}h2{font-size:clamp(23px,2.2vw,30px)}
+}
+</style>
+</head>
+<body>
+<canvas id="matrix"></canvas>
+<div class="app " id="app">
+<header>
+  <div class="brand">SENAI</div>
+  <div class="titlebox"><b>IA aplicadas ao Marketing Digital</b><span>Aula 2 — Fundamentos do Marketing Digital e Evolução 1.0 → 7.0</span></div>
+  <div class="controls"><button id="fullscreenBtn">Tela cheia</button></div>
+</header>
+<main><section class="slide active">
+<div class="panel big hero">
+<div>
+<div class="kicker">Aula 2 · Fundamentos do Marketing Digital</div>
+<h1>Do Marketing tradicional ao Marketing 7.0</h1>
+<p class="lead">Produto, preço, praça e promoção continuam importantes. O que mudou foi o consumidor, os canais, os dados, a tecnologia e a velocidade das decisões.</p>
+<div class="quote">Marketing não é “postar nas redes sociais”. Marketing é criar, comunicar, entregar e sustentar valor para um público.</div>
+</div>
+<div class="marketing-orb">MKT<br>7.0</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">Objetivos de aprendizagem</div><h2>O que vamos aprender nesta aula</h2>
+<div class="grid g3">
+<div class="card"><strong>O que é Marketing</strong><p class="muted">Diferenciar marketing de propaganda e venda.</p></div>
+<div class="card"><strong>Os 4Ps</strong><p class="muted">Produto, Preço, Praça e Promoção com exemplos reais.</p></div>
+<div class="card"><strong>Marketing Digital</strong><p class="muted">Entender o consumidor conectado e a mensuração.</p></div>
+<div class="card"><strong>Evolução 1.0 → 7.0</strong><p class="muted">Do foco no produto ao marketing centrado na mente humana na era da IA.</p></div>
+<div class="card"><strong>Mercado atual</strong><p class="muted">Ler dados recentes do Brasil sem depender de números de 2019–2021.</p></div>
+<div class="card"><strong>Mobile-first</strong><p class="muted">Compreender por que experiência no celular afeta resultado.</p></div>
+</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">1. Conceito</div><h2>Marketing é maior do que comunicação</h2>
+<div class="compare">
+<div class="card"><div class="term">Marketing</div><p>Entende necessidades, define público, constrói oferta, decide preço, distribuição, comunicação, experiência e mede resultados.</p></div>
+<div class="card"><div class="term">Propaganda</div><p>É uma das ferramentas usadas para comunicar uma oferta. Pode ser paga ou fazer parte de uma estratégia maior.</p></div>
+</div>
+<div class="flow"><div class="box">Necessidade</div><div class="arrow">→</div><div class="box">Oferta de valor</div><div class="arrow">→</div><div class="box">Troca</div><div class="arrow">→</div><div class="box">Relacionamento</div></div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">1.1 Valor</div><h2>O cliente não compra “o produto”. Ele compra uma solução percebida</h2>
+<div class="grid g3">
+<div class="card"><strong>Necessidade</strong><p class="muted">O problema ou desejo que existe antes da oferta.</p></div>
+<div class="card"><strong>Valor percebido</strong><p class="muted">O benefício que o cliente acredita receber comparado ao esforço, risco e preço.</p></div>
+<div class="card"><strong>Troca</strong><p class="muted">O cliente entrega dinheiro, atenção, dados ou tempo para obter valor.</p></div>
+</div>
+<div class="quote">Uma furadeira vende uma ferramenta. O cliente, na prática, quer o furo — ou aquilo que ele vai construir com esse furo.</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">2. Marketing Mix</div><h2>Os 4Ps: quatro decisões que precisam conversar entre si</h2>
+<div class="grid g4">
+<div class="card"><div class="big">P1</div><strong>Produto</strong><p class="muted">O que entregamos e qual problema resolvemos.</p></div>
+<div class="card"><div class="big">P2</div><strong>Preço</strong><p class="muted">Quanto custa e o que esse preço comunica.</p></div>
+<div class="card"><div class="big">P3</div><strong>Praça</strong><p class="muted">Onde e como o cliente encontra e recebe.</p></div>
+<div class="card"><div class="big">P4</div><strong>Promoção</strong><p class="muted">Como a oferta é comunicada e estimulada.</p></div>
+</div>
+<div class="warning"><b>Importante:</b> os 4Ps foram estruturados por E. Jerome McCarthy em 1960 e depois amplamente difundidos por Philip Kotler.</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">2.1 Produto</div><h2>Produto é aquilo que entrega valor — físico, digital ou serviço</h2>
+<div class="grid g3">
+<div class="card"><strong>Oferta principal</strong><p>O que está sendo vendido de fato?</p><div class="example">Ex.: pizza artesanal.</div></div>
+<div class="card"><strong>Diferencial</strong><p>Por que alguém escolheria essa oferta?</p><div class="example">Ex.: massa de fermentação longa.</div></div>
+<div class="card"><strong>Experiência</strong><p>Embalagem, atendimento, garantia e pós-venda também fazem parte da percepção.</p></div>
+</div>
+<div class="quote">Pergunta-chave: “Que problema ou desejo este produto resolve melhor do que as alternativas?”</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">2.2 Preço</div><h2>Preço não é apenas “custo + lucro”</h2>
+<div class="grid g3">
+<div class="card"><strong>Custo</strong><p class="muted">Quanto custa produzir, vender, entregar e atender.</p></div>
+<div class="card"><strong>Valor percebido</strong><p class="muted">Quanto o público acredita que a solução vale.</p></div>
+<div class="card"><strong>Posicionamento</strong><p class="muted">Preço também comunica: econômico, intermediário, premium.</p></div>
+</div>
+<div class="flow"><div class="box">R$ 19</div><div class="arrow">≠</div><div class="box">R$ 79</div><div class="arrow">≠</div><div class="box">R$ 299</div></div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">2.3 Praça</div><h2>Praça hoje significa distribuição — física e digital</h2>
+<div class="grid g4">
+<div class="card"><strong>Loja física</strong><p class="muted">Localização, estoque, horário e experiência.</p></div>
+<div class="card"><strong>E-commerce</strong><p class="muted">Site próprio, checkout e logística.</p></div>
+<div class="card"><strong>Marketplace</strong><p class="muted">Mercado Livre, Shopee, Amazon e outros.</p></div>
+<div class="card"><strong>Social commerce</strong><p class="muted">Descoberta e compra dentro ou a partir de plataformas sociais.</p></div>
+</div>
+<div class="quote">Não adianta anunciar para uma região onde você não consegue entregar com prazo e custo competitivos.</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">2.4 Promoção</div><h2>Promoção é comunicação — não é sinônimo de desconto</h2>
+<div class="grid g3">
+<div class="card"><strong>Mídia paga</strong><p class="muted">Search Ads, Social Ads, vídeo, display, retail media.</p></div>
+<div class="card"><strong>Mídia própria</strong><p class="muted">Site, e-mail, blog, aplicativo, comunidade.</p></div>
+<div class="card"><strong>Mídia conquistada</strong><p class="muted">Boca a boca, avaliações, imprensa, compartilhamentos.</p></div>
+</div>
+<div class="quote">Promoção responde: “como o público certo vai descobrir, compreender e lembrar da nossa oferta?”</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">Aplicação</div><h2>Os 4Ps funcionam como sistema, não como quatro caixinhas isoladas</h2>
+<div class="grid g4">
+<div class="card"><strong>Produto</strong><p class="muted">Curso on-line de Excel para iniciantes.</p></div>
+<div class="card"><strong>Preço</strong><p class="muted">R$ 97 com parcelamento.</p></div>
+<div class="card"><strong>Praça</strong><p class="muted">Landing page + plataforma de aulas.</p></div>
+<div class="card"><strong>Promoção</strong><p class="muted">YouTube, Google Search e Instagram.</p></div>
+</div>
+<div class="warning">Se o anúncio promete “curso rápido para iniciantes”, mas o produto exige conhecimento avançado, o problema não é de tráfego: é de coerência do mix.</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">3. Marketing Digital</div><h2>O digital mudou três coisas de forma radical</h2>
+<div class="grid g3">
+<div class="card"><div class="big">1</div><strong>Informação</strong><p class="muted">O consumidor pesquisa, compara, lê avaliações e consulta criadores antes de comprar.</p></div>
+<div class="card"><div class="big">2</div><strong>Segmentação</strong><p class="muted">Campanhas podem trabalhar públicos, contexto, intenção e comportamento com mais precisão.</p></div>
+<div class="card"><div class="big">3</div><strong>Mensuração</strong><p class="muted">Cliques, visualizações, leads, conversões, receita e retenção podem ser acompanhados.</p></div>
+</div>
+<div class="quote">A grande mudança não foi “colocar propaganda na internet”. Foi transformar o consumidor em um agente muito mais informado e mensurável.</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">Brasil Digital · dados recentes</div><h2>O consumidor conectado deixou de ser exceção</h2>
+<div class="statline">
+<div class="card"><div class="value">185 mi</div><strong>usuários de internet</strong><p class="muted">no Brasil ao fim de 2025.</p></div>
+<div class="card"><div class="value">86,9%</div><strong>penetração de internet</strong><p class="muted">sobre a população.</p></div>
+<div class="card"><div class="value">150 mi</div><strong>identidades em redes sociais</strong><p class="muted">em outubro de 2025.</p></div>
+</div>
+<div class="source">Fonte: DataReportal — Digital 2026: Brazil (dados de fim de 2025).</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">Brasil conectado</div><h2>O celular é parte estrutural da jornada digital</h2>
+<div class="grid g3">
+<div class="card"><div class="value">217 mi</div><strong>conexões móveis</strong><p class="muted">ativas no Brasil no fim de 2025.</p></div>
+<div class="card"><div class="value">102%</div><strong>da população</strong><p class="muted">porque uma pessoa pode manter mais de uma conexão.</p></div>
+<div class="card"><div class="value">97,4%</div><strong>das conexões móveis</strong><p class="muted">eram classificadas como banda larga móvel (3G/4G/5G).</p></div>
+</div>
+<div class="source">Fonte: DataReportal / GSMA Intelligence — Digital 2026: Brazil.</div>
+<div class="quote">Mobile-first não significa “desktop morreu”. Significa projetar a experiência considerando que o celular é um ponto decisivo da jornada.</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">4. Evolução do Marketing</div><h2>Do foco no produto à mente humana na era da IA</h2>
+<div class="pyramid">
+<div class="level">1.0 · Produto</div>
+<div class="level">2.0 · Cliente</div>
+<div class="level">3.0 · Valores e propósito humano</div>
+<div class="level">4.0 · Conectividade e integração digital</div>
+<div class="level">5.0 · Tecnologia para a humanidade</div>
+<div class="level">6.0 · Experiências imersivas e metamarketing</div>
+<div class="level">7.0 · Mente humana na era da IA</div>
+</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">Marketing 1.0 → 3.0</div><h2>Primeiro, o centro mudou do produto para o ser humano</h2>
+<div class="grid g3">
+<div class="card"><div class="term">1.0</div><strong>Produto</strong><p>Produção em escala e comunicação massiva. Pergunta dominante: “o que conseguimos vender?”</p></div>
+<div class="card"><div class="term">2.0</div><strong>Cliente</strong><p>Mais informação e concorrência. Segmentação e diferenciação ganham importância. “Para quem estamos vendendo?”</p></div>
+<div class="card"><div class="term">3.0</div><strong>Valores</strong><p>O consumidor passa a ser visto também por valores, propósito e impacto. “O que nossa marca representa?”</p></div>
+</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">Marketing 4.0 → 5.0</div><h2>Conectividade + tecnologia passam a moldar a experiência</h2>
+<div class="grid g2">
+<div class="card"><div class="term">4.0</div><strong>Consumidor conectado</strong><p>Integração entre experiências on-line e off-line, influência social, comunidades, busca e jornada digital.</p></div>
+<div class="card"><div class="term">5.0</div><strong>Tecnologia para a humanidade</strong><p>IA, automação, análise preditiva, personalização, IoT e outras tecnologias usadas para aumentar valor e experiência.</p></div>
+</div>
+<div class="source">Referência: Kotler, Kartajaya e Setiawan — Marketing 5.0: Technology for Humanity (2021).</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">Marketing 6.0 → 7.0</div><h2>A experiência fica imersiva — e depois volta ao centro: a mente humana</h2>
+<div class="grid g2">
+<div class="card"><div class="term">6.0</div><strong>Metamarketing e imersão</strong><p>Integração físico-digital, experiências interativas, realidade estendida e novos comportamentos de Geração Z e Alpha.</p></div>
+<div class="card"><div class="term">7.0</div><strong>Mind-centric Marketing</strong><p>Na era da IA, o foco vai além de otimizar performance: compreender como pessoas percebem, pensam, se conectam e decidem.</p></div>
+</div>
+<div class="quote">Quanto mais a tecnologia automatiza a execução, mais valiosa fica a capacidade humana de compreender contexto, confiança, desejo e significado.</div>
+<div class="source">Referências: Marketing 6.0 (Wiley, 2023) e Marketing 7.0 (Wiley, 2026).</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">5. Atualização dos slides de 2019–2021</div><h2>Publicidade digital no Brasil: R$ 42,7 bilhões em 2025</h2>
+<div class="statline">
+<div class="card"><div class="value">R$ 42,7 bi</div><strong>investimento em 2025</strong><p class="muted">publicidade digital no Brasil.</p></div>
+<div class="card"><div class="value">+12,7%</div><strong>crescimento anual</strong><p class="muted">comparado com 2024.</p></div>
+<div class="card"><div class="value">+80%</div><strong>crescimento acumulado</strong><p class="muted">desde 2020.</p></div>
+</div>
+<div class="source">Fonte: IAB Brasil + IBOPE — Digital Adspend 2026, ano-base 2025.</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">Onde está o investimento</div><h2>Em 2025, três sinais ajudam a entender o mercado</h2>
+<div class="barlist">
+<div class="barrow"><b>Vídeo</b><div class="track"><div class="fill" style="width:49%"></div></div><b>49%</b></div>
+<div class="barrow"><b>Social</b><div class="track"><div class="fill" style="width:55%"></div></div><b>55%</b></div>
+<div class="barrow"><b>Mobile</b><div class="track"><div class="fill" style="width:69%"></div></div><b>69%</b></div>
+<div class="barrow"><b>Desktop</b><div class="track"><div class="fill" style="width:31%"></div></div><b>31%</b></div>
+</div>
+<div class="grid g3" style="margin-top:15px">
+<div class="card"><strong>Vídeo lidera formatos</strong><p class="muted">Quase metade do investimento digital medido.</p></div>
+<div class="card"><strong>Social lidera canais</strong><p class="muted">Redes sociais seguem centrais na distribuição de mídia.</p></div>
+<div class="card"><strong>Mobile domina investimento</strong><p class="muted">Reforça a necessidade de criação e experiência pensadas para celular.</p></div>
+</div>
+<div class="source">Fonte: Digital Adspend 2026 (IAB Brasil + IBOPE). As categorias têm bases diferentes: formato, canal e dispositivo.</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">Mercado 2026</div><h2>Dois termos que não apareciam com força no material antigo</h2>
+<div class="grid g2">
+<div class="card"><div class="value">R$ 4,8 bi</div><strong>Retail Media</strong><p>Publicidade em ambientes de varejo — sites, apps, marketplaces e também pontos físicos — usando contexto de compra e dados do varejista.</p><div class="example">Crescimento de 37% em 2025.</div></div>
+<div class="card"><div class="value">R$ 4,4 bi</div><strong>DOOH</strong><p>Digital Out of Home: mídia exterior digital em telas de rua, aeroportos, edifícios e mobiliário urbano.</p><div class="example">Primeira estimativa específica no Digital Adspend 2026.</div></div>
+</div>
+<div class="source">Fonte: IAB Brasil + IBOPE — Digital Adspend 2026.</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">6. Experiência mobile</div><h2>Um anúncio bom pode morrer em uma página ruim</h2>
+<div class="grid g4">
+<div class="card"><strong>Velocidade</strong><p class="muted">A página precisa carregar rapidamente.</p></div>
+<div class="card"><strong>Legibilidade</strong><p class="muted">Texto e imagens precisam funcionar em tela pequena.</p></div>
+<div class="card"><strong>Interação</strong><p class="muted">Botões devem ser fáceis de tocar e formulários simples.</p></div>
+<div class="card"><strong>Conversão</strong><p class="muted">Checkout, WhatsApp e CTA precisam funcionar sem atrito.</p></div>
+</div>
+<div class="flow"><div class="box">Anúncio</div><div class="arrow">→</div><div class="box">Clique</div><div class="arrow">→</div><div class="box">Página</div><div class="arrow">→</div><div class="box">Ação</div></div>
+<div class="quote">Se o usuário clica e encontra lentidão, botão quebrado ou formulário impossível, o marketing pagou para gerar frustração.</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">7. Extensão prática do material-base</div><h2>Pessoas, Processos, Posicionamento e Performance</h2>
+<div class="grid g4">
+<div class="card"><strong>Pessoas</strong><p class="muted">Quem entrega a experiência e quem recebe valor.</p></div>
+<div class="card"><strong>Processos</strong><p class="muted">Como atendimento, compra, entrega e pós-venda funcionam.</p></div>
+<div class="card"><strong>Posicionamento</strong><p class="muted">Qual espaço queremos ocupar na mente do público.</p></div>
+<div class="card"><strong>Performance</strong><p class="muted">Como medimos se a estratégia gerou resultado.</p></div>
+</div>
+<div class="warning"><b>Precisão conceitual:</b> o material-base apresenta esses quatro itens como “+4Ps”. Existem diferentes extensões dos 4Ps na literatura. Portanto, use este conjunto como framework didático do material, não como uma única “evolução oficial” universal.</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">7.1 Performance</div><h2>Medir “resultado” exige escolher o indicador certo</h2>
+<div class="grid g4">
+<div class="card"><strong>Alcance</strong><p class="muted">Quantas pessoas foram potencialmente expostas.</p></div>
+<div class="card"><strong>CTR</strong><p class="muted">Percentual de impressões que geraram clique.</p></div>
+<div class="card"><strong>Conversão</strong><p class="muted">Percentual que realizou a ação desejada.</p></div>
+<div class="card"><strong>ROAS</strong><p class="muted">Receita atribuída à mídia ÷ investimento em mídia.</p></div>
+</div>
+<div class="quote">KPI não é “qualquer número interessante”. É um indicador-chave ligado ao objetivo do negócio.</div>
+</div>
+</section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Prática · Desafio 2</div><h2>Qual mercado parece mais promissor?</h2>
+  <p class="lead">Uma pessoa dispõe de <strong>R$ 5.000</strong> para iniciar uma pequena operação de vendas on-line no Brasil.</p>
+  <div class="grid g3" style="margin-top:16px">
+    <div class="card"><div class="term">PET</div><p class="muted">Produtos e serviços para animais de estimação.</p></div>
+    <div class="card"><div class="term">MODA</div><p class="muted">Roupas, acessórios ou nichos específicos de vestuário.</p></div>
+    <div class="card"><div class="term">ALIMENTAÇÃO</div><p class="muted">Produtos voltados a alimentação saudável.</p></div>
+  </div>
+  <div class="quote">Antes de perguntar para a IA, o grupo precisa formular a própria hipótese.</div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Etapa 1 · Antes da IA</div><h2>Escolha um mercado e justifique usando o que aprendemos</h2>
+  <div class="grid g4">
+    <div class="card"><strong>Produto</strong><p class="muted">O que poderíamos vender? Existe diferenciação?</p></div>
+    <div class="card"><strong>Preço</strong><p class="muted">Cabe em uma faixa acessível? Há margem possível?</p></div>
+    <div class="card"><strong>Praça</strong><p class="muted">Onde vender: site, marketplace, WhatsApp, social?</p></div>
+    <div class="card"><strong>Promoção</strong><p class="muted">Como o público descobriria a oferta?</p></div>
+  </div>
+  <div class="grid g4" style="margin-top:12px">
+    <div class="card"><strong>Demanda</strong><p class="muted">Parece existir procura recorrente?</p></div>
+    <div class="card"><strong>Concorrência</strong><p class="muted">Alta, média ou baixa? Por quê?</p></div>
+    <div class="card"><strong>Mobile</strong><p class="muted">A compra funciona bem no celular?</p></div>
+    <div class="card"><strong>KPI</strong><p class="muted">Como saberíamos se a estratégia funcionou?</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Ficha da hipótese</div><h2>Registre a decisão do grupo antes de consultar a IA</h2>
+  <div class="practice">Mercado escolhido inicialmente: ______________________
+
+Por que escolhemos esse mercado?
+____________________________________________________
+
+Produto que venderíamos:
+____________________________________________________
+
+Faixa de preço imaginada:
+____________________________________________________
+
+Principal canal de venda:
+____________________________________________________
+
+Principal canal de divulgação:
+____________________________________________________
+
+Maior oportunidade:
+____________________________________________________
+
+Maior risco:
+____________________________________________________</div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Etapa 2 · Prompt de análise</div><h2>Dê à IA um problema de negócio claro</h2>
+  <div class="practice">Você será um analista de Marketing Digital para pequenos negócios.
+
+Quero comparar três possíveis mercados para iniciar uma pequena operação de vendas on-line no Brasil:
+
+- PET
+- MODA
+- ALIMENTAÇÃO SAUDÁVEL
+
+Considere que o investimento inicial disponível é de R$ 5.000.
+
+Sua tarefa é comparar os três mercados usando critérios de marketing e viabilidade inicial.</div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Etapa 2 · Critérios</div><h2>Obrigue a análise a seguir a mesma régua para os três mercados</h2>
+  <div class="practice">Analise cada mercado considerando:
+
+1. Produto: exemplos que poderiam ser oferecidos.
+2. Preço: possibilidade de trabalhar com produtos de entrada de até R$ 100.
+3. Praça: site, marketplace, WhatsApp e redes sociais.
+4. Promoção: formas adequadas de divulgação digital.
+5. Demanda potencial.
+6. Frequência ou possibilidade de recompra.
+7. Nível de concorrência.
+8. Facilidade de venda pelo celular.
+9. Possibilidade de diferenciação.
+10. Um KPI importante para acompanhar.
+
+Para cada critério, dê uma nota de 1 a 5 e justifique resumidamente.</div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Etapa 2 · Saída e segurança</div><h2>Defina como a IA deve concluir — e o que ela não pode inventar</h2>
+  <div class="practice">Ao final:
+
+- monte uma tabela comparativa;
+- some as pontuações;
+- indique qual dos três parece mais promissor;
+- explique a escolha;
+- apresente também um risco da recomendação.
+
+IMPORTANTE:
+- diferencie claramente FATOS de HIPÓTESES;
+- quando usar dados atuais, informe a fonte e o ano;
+- não invente números;
+- quando não houver dados suficientes, escreva "PRECISA SER PESQUISADO".</div>
+  <div class="quote">Agora execute o prompt completo e guarde o resultado. A próxima etapa é questionar a própria resposta da IA.</div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Etapa 3 · Auditoria</div><h2>Não aceite a tabela como verdade automática</h2>
+  <div class="grid g3">
+    <div class="card"><strong>Fonte</strong><p class="muted">Os números citados têm origem identificável?</p></div>
+    <div class="card"><strong>Atualidade</strong><p class="muted">Os dados pertencem ao Brasil e são recentes?</p></div>
+    <div class="card"><strong>Comparabilidade</strong><p class="muted">A IA usou critérios equivalentes nos três mercados?</p></div>
+    <div class="card"><strong>Orçamento</strong><p class="muted">A recomendação realmente cabe em R$ 5.000?</p></div>
+    <div class="card"><strong>Logística</strong><p class="muted">Estoque, entrega, validade e devolução foram considerados?</p></div>
+    <div class="card"><strong>Suposições</strong><p class="muted">O modelo tratou alguma hipótese como se fosse fato?</p></div>
+  </div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Etapa 4 · Confronto</div><h2>Nossa hipótese × análise da IA</h2>
+  <div class="practice">PREENCHA APÓS A RESPOSTA DA IA
+
+1. Mercado que nosso grupo escolheu antes:
+_____________________________________________
+
+2. Mercado recomendado pela IA:
+_____________________________________________
+
+3. A IA confirmou alguma hipótese nossa?
+_____________________________________________
+
+4. A IA contradisse alguma hipótese?
+_____________________________________________
+
+5. Qual argumento da IA consideramos forte?
+_____________________________________________
+
+6. Qual argumento ainda precisa ser pesquisado?
+_____________________________________________
+
+7. Depois da análise, nossa decisão mudou? Por quê?
+_____________________________________________</div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Pergunta-chave</div><h2>“A IA escolheu PET.” Isso significa abrir uma loja PET?</h2>
+  <div class="grid g2">
+    <div class="card"><strong>Não automaticamente</strong><p>A resposta da IA é uma análise orientativa baseada no contexto, nos dados disponíveis e nas premissas do prompt.</p></div>
+    <div class="card"><strong>A decisão exige validação</strong><p>Pesquisa real, fornecedores, margem, logística, concorrentes, legislação, capacidade operacional e teste de mercado.</p></div>
+  </div>
+  <div class="quote">IA pode ajudar a organizar uma decisão. Ela não elimina a responsabilidade de pesquisar, validar e decidir.</div>
+</div></section>
+
+<section class="slide"><div class="panel big">
+  <div class="kicker">Entrega da prática</div><h2>Apresentação de 3 minutos por grupo</h2>
+  <div class="grid g3">
+    <div class="card"><strong>1. Hipótese inicial</strong><p class="muted">Qual mercado escolheram antes da IA e por quê.</p></div>
+    <div class="card"><strong>2. Resultado da IA</strong><p class="muted">Qual mercado foi recomendado e quais foram os principais argumentos.</p></div>
+    <div class="card"><strong>3. Verificação</strong><p class="muted">Uma afirmação que foi confirmada ou ficou sem evidência.</p></div>
+    <div class="card"><strong>4. Decisão final</strong><p class="muted">O grupo manteve ou mudou de opinião?</p></div>
+    <div class="card"><strong>5. Risco</strong><p class="muted">Qual é o principal risco comercial identificado.</p></div>
+    <div class="card"><strong>6. KPI</strong><p class="muted">Qual indicador acompanhariam no primeiro teste.</p></div>
+  </div>
+</div></section>
+
+<section class="slide">
+<div class="panel big">
+<div class="kicker">Revisão</div><h2>O mapa desta aula</h2>
+<div class="flow">
+<div class="box">Valor</div><div class="arrow">→</div>
+<div class="box">4Ps</div><div class="arrow">→</div>
+<div class="box">Consumidor conectado</div><div class="arrow">→</div>
+<div class="box">1.0–7.0</div><div class="arrow">→</div>
+<div class="box">Dados</div><div class="arrow">→</div>
+<div class="box">Mobile</div><div class="arrow">→</div>
+<div class="box">Performance</div>
+</div>
+<div class="grid g3" style="margin-top:16px">
+<div class="card"><strong>Estratégia</strong><p class="muted">Começa antes da postagem.</p></div>
+<div class="card"><strong>Tecnologia</strong><p class="muted">Amplifica decisões boas e ruins.</p></div>
+<div class="card"><strong>Mensuração</strong><p class="muted">Conecta atividade digital ao objetivo.</p></div>
+</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">Quiz final</div><h2>Vamos testar os conceitos?</h2>
+<div id="quizArea"></div>
+<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:15px">
+<button id="quizPrev">Anterior</button><button class="primary" id="quizNext">Próxima</button>
+</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big center">
+<div class="kicker">Conclusão</div><h1>Fundamentos concluídos</h1>
+<p class="lead" style="margin:0 auto 20px">Agora a turma tem uma base atual para avançar para Engenharia de Prompt, personas, jornada, Inbound, AIDA e SEO sem tratar Marketing Digital como simples publicação em rede social.</p>
+<div id="scoreBox"></div>
+<div class="quote" style="text-align:left">Próximo passo: transformar objetivos de marketing em instruções claras para IA e começar a construir personas e jornadas.</div>
+</div>
+</section>
+<section class="slide">
+<div class="panel big">
+<div class="kicker">Referências</div><h2>Fontes usadas para atualizar o material</h2>
+<div class="timeline">
+<div class="event"><strong>Material de apoio fornecido</strong><p>Páginas 6–13: origem apresentada, 4Ps, fases de marketing, extensão dos Ps e dados de 2019–2021.</p></div>
+<div class="event"><strong>IAB Brasil + IBOPE — Digital Adspend 2026</strong><p>Investimento publicitário digital no Brasil em 2025; formatos, canais, dispositivos, retail media e DOOH.</p></div>
+<div class="event"><strong>DataReportal — Digital 2026: Brazil</strong><p>Internet, redes sociais e conexões móveis no Brasil, com dados de fim de 2025.</p></div>
+<div class="event"><strong>Kotler, Kartajaya e Setiawan</strong><p>Marketing 5.0 (2021), Marketing 6.0 (2023) e Marketing 7.0 (2026).</p></div>
+<div class="event"><strong>E. Jerome McCarthy</strong><p>Estrutura moderna dos 4Ps em Basic Marketing (1960), posteriormente difundida por Kotler.</p></div>
+</div>
+</div>
+</section></main>
+<footer>
+  <div class="progressWrap">
+    <div class="progressInfo"><span id="slideCounter"></span><span id="pct"></span></div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+  </div>
+  <div class="nav"><button id="prev">← Anterior</button><button class="primary" id="next">Próximo →</button></div>
+</footer>
+</div>
+<script>
+
+const canvas=document.getElementById('matrix'),ctx=canvas.getContext('2d');
+let drops=[],fontSize=15;
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight;const cols=Math.floor(canvas.width/fontSize);drops=Array(cols).fill(1).map(()=>Math.random()*-60)}
+function drawMatrix(){ctx.fillStyle='rgba(0,8,5,.075)';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#19e978';ctx.font=fontSize+'px monospace';const chars='01MARKETINGAISEOCRM';drops.forEach((y,i)=>{const t=chars[Math.floor(Math.random()*chars.length)];ctx.fillText(t,i*fontSize,y*fontSize);if(y*fontSize>canvas.height && Math.random()>.977)drops[i]=0;drops[i]++});requestAnimationFrame(drawMatrix)}
+resize();addEventListener('resize',resize);drawMatrix();
+
+const slides=[...document.querySelectorAll('.slide')];let current=0;
+const prev=document.getElementById('prev'),next=document.getElementById('next');
+function show(i){
+ current=Math.max(0,Math.min(i,slides.length-1));
+ slides.forEach((s,n)=>s.classList.toggle('active',n===current));
+ document.getElementById('slideCounter').textContent=`${current+1} / ${slides.length}`;
+ const p=Math.round(current/(slides.length-1)*100);
+ document.getElementById('pct').textContent=p+'%';
+ document.getElementById('bar').style.width=p+'%';
+ prev.disabled=current===0;next.textContent=current===slides.length-1?'Voltar ao início ↺':'Próximo →';
+}
+prev.onclick=()=>show(current-1);next.onclick=()=>current===slides.length-1?show(0):show(current+1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')show(current+1);if(e.key==='ArrowLeft')show(current-1)});
+document.getElementById('fullscreenBtn').onclick=()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen()};
+
+const quiz=[{q:'O que diferencia Marketing de propaganda?',a:['Marketing cuida apenas de anúncios', 'Marketing envolve criação e entrega de valor; propaganda é uma ferramenta de comunicação', 'São exatamente a mesma coisa', 'Marketing só existe no digital'],c:1},{q:'Quais são os 4Ps clássicos?',a:['Produto, Preço, Praça e Promoção', 'Pessoas, Processo, Pesquisa e Performance', 'Preço, Público, Persona e Post', 'Produto, Publicidade, Plataforma e Performance'],c:0},{q:'O que significa Praça no Marketing Mix?',a:['Somente uma praça pública', 'Apenas o endereço da empresa', 'Onde e como a oferta chega ao cliente', 'Somente redes sociais'],c:2},{q:'Promoção, nos 4Ps, significa...',a:['Somente desconto', 'Comunicação da oferta e estímulo à demanda', 'Aumentar o preço', 'Escolher a embalagem'],c:1},{q:'Qual foi o investimento em publicidade digital no Brasil em 2025 segundo o Digital Adspend 2026?',a:['R$ 16 bi', 'R$ 23,7 bi', 'R$ 42,7 bi', 'R$ 100 bi'],c:2},{q:'Qual formato liderou o investimento digital em 2025?',a:['Áudio', 'Vídeo', 'Imagem', 'Texto'],c:1},{q:'Qual ambiente recebeu a maior parcela do investimento digital por dispositivo?',a:['Desktop', 'Mobile', 'Console', 'TV aberta'],c:1},{q:'Marketing 5.0 enfatiza...',a:['Tecnologia para a humanidade', 'Apenas produção em massa', 'Somente televisão', 'Fim do uso de dados'],c:0},{q:'Marketing 6.0 está associado a...',a:['Experiências imersivas e metamarketing', 'Somente preço', 'Fim do digital', 'Marketing industrial'],c:0},{q:'Marketing 7.0 coloca maior foco em...',a:['Apenas automatizar campanhas', 'A mente humana na era da IA', 'Eliminar profissionais de marketing', 'Somente metaverso'],c:1},{q:'Um KPI é...',a:['Qualquer número de uma plataforma', 'Um indicador-chave ligado a um objetivo', 'Somente número de seguidores', 'Um tipo de anúncio'],c:1},{q:'Mobile-first significa...',a:['Excluir desktop', 'Projetar considerando o celular como ponto crítico da jornada', 'Criar apenas aplicativo', 'Usar somente Instagram'],c:1}];
+let qi=0,answers=Array(quiz.length).fill(null);
+const area=document.getElementById('quizArea'),qprev=document.getElementById('quizPrev'),qnext=document.getElementById('quizNext');
+function renderQuiz(){
+ const x=quiz[qi];
+ area.innerHTML=`<div class="question"><b>Questão ${qi+1}/${quiz.length}</b><br>${x.q}</div>
+ <div class="answers">${x.a.map((v,i)=>`<div class="answer ${answers[qi]===i?'selected':''}" data-i="${i}">${String.fromCharCode(65+i)}. ${v}</div>`).join('')}</div>`;
+ area.querySelectorAll('.answer').forEach(el=>el.onclick=()=>{answers[qi]=+el.dataset.i;renderQuiz()});
+ qprev.disabled=qi===0;qnext.textContent=qi===quiz.length-1?'Ver resultado':'Próxima';
+}
+qprev.onclick=()=>{if(qi>0){qi--;renderQuiz()}};
+qnext.onclick=()=>{
+ if(answers[qi]===null){alert('Selecione uma resposta.');return}
+ if(qi<quiz.length-1){qi++;renderQuiz();return}
+ const score=quiz.reduce((s,x,i)=>s+(answers[i]===x.c?1:0),0);
+ document.getElementById('scoreBox').innerHTML=`<div class="card"><div class="result">${score}/${quiz.length}</div><p>Aproveitamento: ${Math.round(score/quiz.length*100)}%</p></div>`;
+ show(slides.length-2);
+};
+renderQuiz();show(0);
+</script>
+</body>
+</html>
