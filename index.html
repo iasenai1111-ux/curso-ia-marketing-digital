@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>IA aplicadas ao Marketing Digital — Aulas</title>
+<style>
+:root{--bg:#020806;--panel:rgba(3,24,16,.9);--green:#21ff8b;--green2:#79ffb7;--text:#eafff2;--muted:#a5cbb6;--line:rgba(33,255,139,.28);--red:#e30613}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif;line-height:1.5;
+  background-image:linear-gradient(rgba(33,255,139,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(33,255,139,.05) 1px,transparent 1px);background-size:44px 44px}
+main{max-width:860px;margin:0 auto;padding:clamp(28px,7vw,84px) 22px 60px}
+.tag{font-family:Consolas,monospace;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--green)}
+h1{font-size:clamp(34px,7vw,62px);line-height:1.04;margin:14px 0 18px;letter-spacing:-.02em;text-wrap:balance}
+h1 span{color:var(--green)}
+.lead{color:var(--muted);font-size:18px;max-width:58ch;margin:0 0 44px}
+ol{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+li{border-bottom:1px solid var(--line)}
+.row{display:grid;grid-template-columns:74px 1fr auto;gap:18px;align-items:center;padding:22px 6px;color:inherit;text-decoration:none}
+a.row:hover,a.row:focus-visible{background:var(--panel);outline:none}
+a.row:focus-visible{box-shadow:inset 0 0 0 2px var(--green)}
+.num{font-family:Consolas,monospace;font-size:34px;color:var(--green);line-height:1}
+.row h2{font-size:20px;margin:0 0 4px}
+.row p{margin:0;color:var(--muted);font-size:15px}
+.go{font-family:Consolas,monospace;font-size:13px;color:var(--bg);background:var(--green);padding:8px 14px;border-radius:6px;white-space:nowrap}
+.soon .num,.soon h2{color:var(--muted)}
+.soon .go{background:transparent;color:var(--muted);border:1px dashed var(--line)}
+.how{margin-top:44px;color:var(--muted);font-size:15px;max-width:62ch}
+.how kbd{font-family:Consolas,monospace;border:1px solid var(--line);border-radius:4px;padding:1px 6px;color:var(--green2)}
+footer{margin-top:54px;font-size:13px;color:var(--muted)}
+footer a{color:var(--green2)}
+@media(max-width:560px){.row{grid-template-columns:52px 1fr}.go{grid-column:2;justify-self:start}.num{font-size:26px}}
+</style>
+</head>
+<body>
+<main>
+  <div class="tag">Curso · material do aluno</div>
+  <h1>IA aplicadas ao <span>Marketing Digital</span></h1>
+  <p class="lead">Aulas interativas para acompanhar em sala ou rever depois. Cada aula abre no navegador, com conteúdo, dados atualizados e uma prática no final.</p>
+
+  <ol>
+    <li><div class="row soon">
+      <div class="num">01</div>
+      <div><h2>Fundamentos de IA + Prática</h2><p>O que é inteligência artificial e como ela entra no trabalho de marketing.</p></div>
+      <span class="go">em breve</span>
+    </div></li>
+    <li><a class="row" href="aula-02/">
+      <div class="num">02</div>
+      <div><h2>Fundamentos de Marketing Digital + Prática</h2><p>Dos 4Ps ao Marketing 7.0, o mercado digital no Brasil e uma análise de mercado com apoio de IA.</p></div>
+      <span class="go">abrir aula →</span>
+    </a></li>
+  </ol>
+
+  <p class="how">Dentro da aula, avance com os botões <kbd>Anterior</kbd> e <kbd>Próximo</kbd> ou com as setas <kbd>←</kbd> <kbd>→</kbd> do teclado. O botão <kbd>Tela cheia</kbd> ajuda em telas pequenas.</p>
+
+  <footer>Instrutor Rafael Pereira · <a href="https://github.com/iasenai1111-ux">github.com/iasenai1111-ux</a></footer>
+</main>
+</body>
+</html>
