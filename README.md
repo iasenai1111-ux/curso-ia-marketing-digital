@@ -10,6 +10,7 @@ Material do aluno do curso **IA aplicadas ao Marketing Digital**. Cada aula abre
 |---|---|---|
 | 01 | Fundamentos de IA + Prática | 🔒 em breve |
 | 02 | Fundamentos de Marketing Digital + Prática | 🔒 em breve |
+| 03 | Engenharia de Prompt | 🔒 em breve |
 
 ## Como usar
 
