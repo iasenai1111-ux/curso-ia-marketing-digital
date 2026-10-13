@@ -8,9 +8,12 @@ Material do aluno do curso **IA aplicadas ao Marketing Digital**. Cada aula abre
 
 | Nº | Aula | Situação |
 |---|---|---|
-| 01 | Fundamentos de IA + Prática | 🔒 em breve |
-| 02 | Fundamentos de Marketing Digital + Prática | 🔒 em breve |
-| 03 | Engenharia de Prompt | 🔒 em breve |
+| 01 | Fundamentos de IA + Prática | 🔒 abre em 14/10 |
+| 02 | Fundamentos de Marketing Digital + Prática | 🔒 abre em 15/10 |
+| 03 | Engenharia de Prompt | 🔒 abre em 16/10 |
+| 04 | Inbound, Persona e AIDA | 🔒 abre em 17/10 |
+| 05 | SEO e Palavras-Chave | 🔒 abre em 18/10 |
+| 06 | Ecossistema de IA para Comunicação | 🔒 abre em 19/10 |
 
 ## Como usar
 
