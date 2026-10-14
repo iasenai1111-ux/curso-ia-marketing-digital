@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Aula 1 — Aluno — Fundamentos de IA</title>
+<style>
+:root{
+  --bg:#020806; --panel:rgba(3,24,16,.90); --panel2:rgba(5,35,23,.94);
+  --green:#21ff8b; --green2:#79ffb7; --text:#eafff2; --muted:#a5cbb6;
+  --line:rgba(33,255,139,.28); --red:#e30613; --yellow:#ffe26e; --pink:#ff4e91;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--text)}
+#matrix{position:fixed;inset:0;z-index:0;opacity:.24}
+.app{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column}
+header{
+ height:66px;padding:0 24px;display:flex;align-items:center;gap:16px;
+ background:rgba(0,8,5,.9);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)
+}
+.brand{background:var(--red);font-weight:900;font-size:21px;padding:9px 14px;letter-spacing:.7px}
+.titlebox{min-width:0}.titlebox b{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.titlebox span{font-size:11px;color:var(--muted)}
+.controls{margin-left:auto;display:flex;align-items:center;gap:9px;flex:0 0 auto}
+button{
+ border:1px solid var(--line);background:#062417;color:var(--text);padding:9px 13px;border-radius:7px;cursor:pointer;font-weight:700
+}
+button:hover{background:#0a3422}
+button.primary{background:#0c653a;border-color:#1cf07c}
+button:disabled{opacity:.35;cursor:not-allowed}
+main{position:relative;flex:1}
+.slide{
+ position:absolute;inset:0;padding:24px 36px 82px;overflow:auto;
+ opacity:0;transform:translateX(25px) scale(.99);pointer-events:none;transition:.25s ease
+}
+.slide.active{opacity:1;transform:none;pointer-events:auto}
+.panel{
+ max-width:1180px;margin:0 auto;background:linear-gradient(180deg,var(--panel2),var(--panel));
+ border:1px solid var(--line);box-shadow:0 0 55px rgba(0,255,120,.08);
+ border-radius:9px;padding:22px 24px
+}
+.panel.big{min-height:72vh}
+.kicker{font-size:12px;color:var(--green);letter-spacing:2px;text-transform:uppercase;font-weight:900;margin-bottom:10px}
+h1{font-size:clamp(32px,3.25vw,46px);line-height:1.05;margin:0 0 14px;overflow-wrap:break-word}
+h2{font-size:clamp(24px,2.35vw,33px);line-height:1.12;margin:0 0 14px;overflow-wrap:break-word}
+h3{font-size:18px;line-height:1.2;margin:0 0 7px;color:#fff;overflow-wrap:break-word}
+p{font-size:15.5px;line-height:1.42;margin:7px 0;color:#e3f7eb;overflow-wrap:break-word}
+.lead{font-size:19.5px;line-height:1.42;color:#fff;max-width:920px}
+.muted{color:var(--muted)}
+.small{font-size:12.5px;line-height:1.35;color:var(--muted)}
+.grid{display:grid;gap:12px;min-width:0}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{
+ border:1px solid var(--line);background:rgba(0,15,9,.62);border-radius:8px;padding:14px;min-height:96px;min-width:0;overflow-wrap:break-word
+}
+.card strong{display:block;color:var(--green2);font-size:16px;line-height:1.2;margin-bottom:6px;overflow-wrap:break-word}
+.card .value{font-size:clamp(29px,3vw,42px);font-weight:900;color:var(--green);line-height:1;margin-bottom:7px}
+.tag{display:inline-block;color:var(--green);border:1px solid var(--line);padding:5px 8px;border-radius:999px;font-size:11px;margin:2px 4px 2px 0}
+.quote{border-left:4px solid var(--green);background:rgba(0,0,0,.35);padding:12px 15px;font-size:18px;line-height:1.35;margin:14px 0;overflow-wrap:break-word}
+.note{border:1px dashed rgba(255,226,110,.45);background:rgba(55,48,0,.24);padding:10px 13px;border-radius:7px;color:#fff8c5;margin-top:10px;font-size:13px;line-height:1.35;overflow-wrap:break-word}
+.note b{color:var(--yellow)}
+.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:28px;align-items:center;min-height:62vh}
+.marketing-orb{
+ width:250px;height:250px;border-radius:50%;display:grid;place-items:center;margin:auto;
+ border:1px solid var(--green);box-shadow:0 0 80px rgba(33,255,139,.2),inset 0 0 55px rgba(33,255,139,.08);
+ position:relative;font-weight:900;font-size:50px;color:var(--green);text-align:center
+}
+.marketing-orb:before,.marketing-orb:after{content:"";position:absolute;border:1px solid var(--line);border-radius:50%}
+.marketing-orb:before{inset:35px}.marketing-orb:after{inset:72px}
+.flow{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:14px}
+.flow .box{padding:10px 12px;background:#041b11;border:1px solid var(--line);border-radius:7px;font-weight:800;font-size:14px;overflow-wrap:break-word}
+.arrow{color:var(--green);font-size:25px}
+.timeline{position:relative;padding-left:33px}
+.timeline:before{content:"";position:absolute;left:11px;top:4px;bottom:4px;width:2px;background:rgba(33,255,139,.3)}
+.event{position:relative;margin:0 0 10px;padding:11px 14px;background:rgba(0,16,9,.72);border:1px solid var(--line);border-radius:7px}
+.event:before{content:"";position:absolute;left:-29px;top:18px;width:12px;height:12px;border-radius:50%;background:var(--green);box-shadow:0 0 15px var(--green)}
+.year{color:var(--green);font-weight:900;font-size:16px}
+.bignum{font-size:34px;color:var(--green);font-weight:900}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.term{font-size:25px;color:var(--green);font-weight:900}
+.example{border-top:1px solid var(--line);margin-top:10px;padding-top:10px;color:#d8efe2}
+.diagram{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;align-items:stretch;margin-top:14px}
+.diagram .stage{padding:11px;border:1px solid var(--line);background:#03190f;border-radius:7px;text-align:center}
+.practice{font-family:Consolas,monospace;white-space:pre-wrap;background:#000a05;border:1px solid var(--line);padding:12px;font-size:13px;line-height:1.35;overflow-wrap:anywhere;border-radius:7px;color:#dffdeb}
+.barlist{display:grid;gap:11px;margin-top:12px}
+.barrow{display:grid;grid-template-columns:150px 1fr 70px;gap:10px;align-items:center;font-size:13px}
+.track{height:16px;background:#07150f;border:1px solid rgba(33,255,139,.2);border-radius:999px;overflow:hidden}
+.fill{height:100%;background:linear-gradient(90deg,#0c8b4b,var(--green));border-radius:999px}
+.statline{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.pyramid{display:grid;gap:6px;max-width:880px;margin:12px auto 0}
+.level{margin:auto;padding:10px 14px;text-align:center;border:1px solid var(--line);background:#03190f;border-radius:7px;font-weight:800}
+.level:nth-child(1){width:100%}.level:nth-child(2){width:88%}.level:nth-child(3){width:76%}.level:nth-child(4){width:64%}
+.level:nth-child(5){width:52%}.level:nth-child(6){width:40%}.level:nth-child(7){width:30%}
+.question{font-size:20px;margin-bottom:14px}.answers{display:grid;gap:9px}
+.answer{padding:12px 14px;border:1px solid var(--line);background:#03190f;border-radius:7px;cursor:pointer}
+.answer:hover,.answer.selected{background:#074026;border-color:var(--green)}
+.result{font-size:42px;font-weight:900;color:var(--green)}
+footer{
+ position:absolute;bottom:0;left:0;right:0;height:66px;background:rgba(0,8,5,.94);border-top:1px solid var(--line);
+ display:flex;align-items:center;padding:0 24px;z-index:4
+}
+.progressWrap{width:280px}.progressInfo{font-size:10px;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:5px}
+.progress{height:5px;background:#092017;border-radius:99px;overflow:hidden}.bar{height:100%;background:var(--green);width:0}
+.nav{margin-left:auto;display:flex;gap:8px}
+.teacher-only{display:none}.teacher-mode .teacher-only{display:block}
+.center{text-align:center}
+.source{font-size:11px;color:#86b89b;margin-top:8px}
+.warning{border-left:4px solid var(--yellow);background:rgba(70,56,0,.26);padding:11px 14px;border-radius:6px;margin:12px 0}
+@media(max-width:900px){
+ .g2,.g3,.g4,.hero,.compare,.diagram,.statline{grid-template-columns:1fr}
+ .slide{padding:20px 16px 82px}.marketing-orb{width:200px;height:200px;font-size:40px}
+ .progressWrap{display:none}.barrow{grid-template-columns:100px 1fr 55px}
+}
+@media(max-height:760px){
+ .slide{padding-top:16px}.panel{padding:16px 18px}.panel.big{min-height:auto}
+ p{font-size:14px}.lead{font-size:18px}.card{padding:11px;min-height:82px}
+ h1{font-size:clamp(30px,3vw,41px)}h2{font-size:clamp(23px,2.2vw,30px)}
+}
+
+.prompt-orb{
+ width:250px;height:250px;border-radius:50%;display:grid;place-items:center;margin:auto;
+ border:1px solid var(--green);box-shadow:0 0 80px rgba(33,255,139,.2),inset 0 0 55px rgba(33,255,139,.08);
+ position:relative;font-weight:900;font-size:44px;color:var(--green);text-align:center
+}
+.prompt-orb:before,.prompt-orb:after{content:"";position:absolute;border:1px solid var(--line);border-radius:50%}
+.prompt-orb:before{inset:35px}.prompt-orb:after{inset:72px}
+.code-label{font-size:11px;text-transform:uppercase;letter-spacing:1.4px;color:var(--green);margin-bottom:6px;font-weight:900}
+.bad{border-color:rgba(255,90,90,.45)!important;background:rgba(70,10,10,.30)!important}
+.good{border-color:rgba(33,255,139,.45)!important}
+.bad strong{color:#ff9292!important}
+.builder{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.builder label{display:block;font-size:12px;color:var(--green2);font-weight:800;margin-bottom:5px}
+.builder input,.builder textarea,.builder select{
+ width:100%;background:#001008;color:var(--text);border:1px solid var(--line);border-radius:7px;
+ padding:9px 10px;font:13px Arial,Helvetica,sans-serif;outline:none
+}
+.builder textarea{min-height:74px;resize:vertical}
+.builder input:focus,.builder textarea:focus,.builder select:focus{border-color:var(--green)}
+.builder-output{
+ white-space:pre-wrap;background:#000a05;border:1px solid var(--line);border-radius:7px;
+ padding:12px;font:13px/1.42 Consolas,monospace;min-height:260px;color:#dffdeb;overflow:auto
+}
+.checkgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.checkitem{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);background:#03190f;border-radius:7px;padding:11px}
+.checkdot{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#0c653a;color:#fff;font-weight:900;flex:0 0 auto}
+.meter{display:grid;grid-template-columns:160px 1fr;gap:10px;align-items:center;margin:8px 0}
+.meter .track{height:12px}
+.highlight{color:var(--green);font-weight:900}
+@media(max-width:900px){.builder,.checkgrid{grid-template-columns:1fr}.prompt-orb{width:200px;height:200px;font-size:36px}.meter{grid-template-columns:110px 1fr}}
+
+/* --- Modo oficina: explica -> pratica --- */
+.practice-card{
+  border:1px solid rgba(255,190,70,.45);
+  background:rgba(65,38,0,.30);
+  border-radius:10px;padding:14px;
+}
+.practice-tag{
+  display:inline-block;padding:5px 9px;border-radius:999px;
+  border:1px solid rgba(255,190,70,.45);color:#ffd18a;
+  background:rgba(70,40,0,.35);font-weight:900;font-size:11px;
+  letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;
+}
+.mini-flow{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin:14px 0}
+.mini-flow .box{border:1px solid var(--line);background:#03190f;border-radius:7px;padding:10px 12px;font-weight:800}
+.mini-flow .arrow{color:var(--green);font-size:20px;font-weight:900}
+.promptbox{
+  white-space:pre-wrap;background:#000a05;border:1px solid var(--line);
+  border-radius:7px;padding:12px;font:13px/1.42 Consolas,monospace;
+  color:#dffdeb;overflow:auto;max-height:36vh
+}
+.workfield label{display:block;color:var(--green2);font-size:12px;font-weight:800;margin:7px 0 5px}
+.workfield input,.workfield textarea,.workfield select{
+  width:100%;background:#001008;color:var(--text);border:1px solid var(--line);
+  border-radius:7px;padding:9px 10px;font:13px Arial,Helvetica,sans-serif;outline:none
+}
+.workfield textarea{min-height:82px;resize:vertical}
+.workfield input:focus,.workfield textarea:focus,.workfield select:focus{border-color:var(--green)}
+.teacher-only{display:none!important}
+.teacher-mode .teacher-only{display:block!important}
+.teacher-note{
+  border-left:4px solid #ffb347;background:rgba(60,35,0,.35);
+  padding:10px 12px;border-radius:7px;margin-top:12px;color:#ffe7be
+}
+.microcheck{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.microcheck .item{border:1px solid var(--line);background:#03190f;border-radius:7px;padding:10px}
+.stage-title{font-size:12px;color:#ffd18a;font-weight:900;letter-spacing:1px;text-transform:uppercase}
+.quiz-mini .answer{cursor:pointer}
+@media(max-width:900px){
+ .microcheck{grid-template-columns:1fr}
+ .slide{padding:16px 14px 82px}
+ .panel{padding:16px}
+ .promptbox{max-height:none}
+}
+
+/* --- Correções e componentes que faltavam --- */
+.practice-card{font-size:15.5px;line-height:1.42;color:#e3f7eb}
+.card{font-size:15.5px;line-height:1.42}
+.practice-card ul{margin:8px 0 0 18px;padding:0}
+.badge{display:inline-block;border:1px solid var(--line);background:#03190f;border-radius:999px;padding:5px 10px;margin:3px 4px 3px 0;font-size:13px;font-weight:700}
+
+.journey{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}
+.journey .step{border:1px solid var(--line);background:#03190f;border-radius:8px;padding:14px;text-align:center;position:relative}
+.journey .step strong{color:var(--green2);font-size:16px}
+.journey .n{width:34px;height:34px;border-radius:50%;margin:0 auto 8px;display:grid;place-items:center;background:#0c653a;color:#fff;font-weight:900}
+
+.aida{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}
+.aida .a{border:1px solid var(--line);background:#03190f;border-radius:8px;padding:16px;text-align:center}
+.aida .letter{font-size:44px;font-weight:900;color:var(--green);line-height:1;margin-bottom:6px}
+.aida strong{color:var(--green2);font-size:16px}
+
+.intent-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}
+.intent-card{border:1px solid var(--line);background:#03190f;border-radius:8px;padding:14px;text-align:center}
+.intent-card .ico{width:42px;height:42px;border-radius:8px;margin:0 auto 8px;display:grid;place-items:center;background:#0c653a;color:#fff;font-weight:900;font-size:20px}
+.intent-card strong{color:var(--green2);font-size:16px;display:block}
+.intent-card p{font-size:13px;color:var(--muted);margin:6px 0 0}
+
+.tail-wrap{display:grid;gap:8px;margin:14px 0}
+.tail{border:1px solid var(--line);background:#03190f;border-radius:8px;padding:12px 14px;font-size:15px}
+.tail strong{color:var(--green);letter-spacing:1px;margin-right:8px}
+.tail.head{width:40%}.tail.middle{width:68%}.tail.long{width:100%}
+
+.cluster{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.cluster span{border:1px solid var(--line);background:#03190f;border-radius:999px;padding:8px 14px;font-weight:700;color:var(--green2)}
+
+.matrix4{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:14px 0}
+.matrix4>div{padding:10px 12px;border-bottom:1px solid rgba(33,255,139,.15);border-right:1px solid rgba(33,255,139,.15);font-size:14px;background:rgba(0,15,9,.62)}
+.matrix4>div:nth-child(5n){border-right:0}
+.matrix4 .head{background:#0c3f26;color:var(--green2);font-weight:900;text-transform:uppercase;font-size:12px;letter-spacing:1px}
+
+.checklist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.checklist label{display:flex;gap:10px;align-items:center;border:1px solid var(--line);background:#03190f;border-radius:7px;padding:11px;cursor:pointer;font-size:15px}
+.checklist input{width:18px;height:18px;accent-color:#21ff8b}
+
+.builder-final{white-space:pre-wrap;background:#000a05;border:1px solid var(--line);border-radius:7px;padding:12px;font:13px/1.42 Consolas,monospace;color:#dffdeb;min-height:140px;max-height:38vh;overflow:auto}
+.rowbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.savebox{border:1px solid var(--line);background:rgba(0,15,9,.62);border-radius:8px;padding:14px;margin-top:14px;text-align:left}
+.saveinfo{font-size:11px;color:var(--muted);margin-left:14px}
+.quiz-msg{color:var(--yellow);font-size:14px;margin-top:10px;min-height:18px}
+@media(max-width:900px){
+ .journey,.aida,.intent-grid,.checklist{grid-template-columns:1fr 1fr}
+ .matrix4{grid-template-columns:repeat(5,minmax(90px,1fr));overflow-x:auto}
+ .tail.head,.tail.middle{width:100%}
+}
+@media(prefers-reduced-motion:reduce){#matrix{display:none}.slide{transition:none}}
+.timeline .event{padding:8px 14px;margin-bottom:7px}
+.timeline .event .year{display:inline-block;margin-right:10px}
+.timeline .event strong{display:inline}
+.timeline .event p{margin:3px 0 0}
+.timeline .event:before{top:13px}
+
+</style>
+</head>
+<body>
+<canvas id="matrix" aria-hidden="true"></canvas>
+<div class="app" id="app">
+<header>
+  <div class="brand">SENAI</div>
+  <div class="titlebox"><b>IA aplicadas ao Marketing Digital</b><span>Aula 1 — Fundamentos de IA · Modo Oficina</span></div>
+  <div class="controls"><button data-action="download" title="Baixar as respostas desta aula">Baixar respostas</button><button id="fullscreenBtn">Tela cheia</button></div>
+</header>
+<main><section class="slide active">
+<div class="panel big hero">
+<div>
+<div class="kicker">Aula 1 · Modo Oficina</div>
+<h1>Fundamentos de IA<br>aprendendo na prática</h1>
+<p class="lead">Conceitos essenciais de Inteligência Artificial intercalados com pequenos testes e experimentos.</p>
+<div class="quote">APRENDE → TESTA → ANALISA → MELHORA → CONTINUA</div>
+</div>
+<div class="prompt-orb" style="width:230px;height:230px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--green);box-shadow:0 0 70px rgba(33,255,139,.18);font-size:31px;font-weight:900;color:var(--green);text-align:center">IA<br>NA PRÁTICA</div>
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Como será a aula</div>
+<h2>Hoje não vamos deixar a prática para o final</h2>
+
+<div class="mini-flow"><div class="box">Explica</div><div class="arrow">→</div><div class="box">Aluno testa</div><div class="arrow">→</div><div class="box">Compara</div><div class="arrow">→</div><div class="box">Próximo conceito</div></div>
+<div class="grid g3">
+<div class="card"><strong>Meta</strong><p class="muted">Entender IA sem decorar definições.</p></div>
+<div class="card"><strong>Projeto</strong><p class="muted">Escolher um pequeno negócio que será usado no curso.</p></div>
+<div class="card"><strong>Ferramenta</strong><p class="muted">Usar uma IA de texto disponível durante a aula.</p></div>
+</div>
+<div class="note"><b>Suas respostas ficam salvas neste navegador.</b> No final da aula, use “Baixar respostas” para guardar uma cópia.</div>
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Conceito 1</div>
+<h2>O que é Inteligência Artificial?</h2>
+
+<div class="grid g2">
+<div class="card"><strong>Ideia central</strong><p>Sistemas computacionais capazes de executar tarefas que envolvem percepção, previsão, classificação, linguagem, recomendação ou geração de conteúdo.</p></div>
+<div class="practice-card"><div class="practice-tag">Faça agora · 2 min</div><strong>Onde você já encontra IA?</strong><p class="muted">Anote 3 exemplos do seu dia a dia.</p><div class="workfield"><textarea data-label="3 exemplos de IA no dia a dia" placeholder="1. ...&#10;2. ...&#10;3. ..."></textarea></div></div>
+</div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Conceito 2</div>
+<h2>IA tradicional × IA generativa</h2>
+
+<div class="grid g2">
+<div class="card"><strong>IA tradicional</strong><p class="muted">Classifica, recomenda, detecta padrões ou prevê resultados.</p><div class="example">Filtro de spam · recomendação · detecção de fraude</div></div>
+<div class="card"><strong>IA generativa</strong><p class="muted">Cria novas saídas: texto, imagem, áudio, vídeo, código etc.</p><div class="example">Texto · imagem · música · roteiro</div></div>
+</div>
+<div class="practice-card" style="margin-top:12px"><div class="practice-tag">Faça agora · 3 min</div>
+<p>Classifique cada exemplo como tradicional ou generativa:</p>
+<span class="badge">Netflix recomenda filme</span> <span class="badge">IA cria uma imagem</span> <span class="badge">câmera detecta rosto</span> <span class="badge">IA escreve legenda</span>
+<div class="workfield"><textarea data-label="Classificação: tradicional ou generativa" placeholder="Netflix recomenda filme → ...&#10;IA cria uma imagem → ...&#10;Câmera detecta rosto → ...&#10;IA escreve legenda → ..."></textarea></div>
+</div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Conceito 3</div>
+<h2>Como um LLM recebe uma tarefa</h2>
+
+<div class="mini-flow"><div class="box">Entrada</div><div class="arrow">→</div><div class="box">Contexto</div><div class="arrow">→</div><div class="box">Modelo</div><div class="arrow">→</div><div class="box">Resposta</div></div>
+<div class="quote">O modelo não conhece automaticamente seu negócio. Ele responde com base no contexto que recebeu.</div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Prática 1</div>
+<h2>Teste um prompt genérico</h2>
+
+<div class="practice-card">
+<div class="practice-tag">Faça agora · 4 min</div>
+<p>Escolha um negócio: cafeteria, barbearia, pizzaria, pet shop, academia ou outro.</p>
+<div class="workfield"><label>Negócio escolhido para o curso</label><input placeholder="Ex.: cafeteria de bairro"></div>
+<div class="promptbox">Me dê ideias para divulgar uma cafeteria.</div>
+<p class="muted">Troque “cafeteria” pelo negócio escolhido. Execute e guarde a resposta.</p>
+</div>
+<div class="workfield"><label>O que ficou genérico na resposta?</label><textarea placeholder="Anote 2 ou 3 pontos..."></textarea></div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Conceito 4</div>
+<h2>Contexto muda a utilidade da resposta</h2>
+
+<div class="grid g4">
+<div class="card"><strong>Negócio</strong><p class="muted">O que estamos divulgando?</p></div>
+<div class="card"><strong>Público</strong><p class="muted">Para quem?</p></div>
+<div class="card"><strong>Objetivo</strong><p class="muted">O que queremos gerar?</p></div>
+<div class="card"><strong>Canal</strong><p class="muted">Onde a ação acontecerá?</p></div>
+</div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Prática 2</div>
+<h2>Execute novamente com contexto</h2>
+
+<div class="practice-card"><div class="practice-tag">Faça agora · 6 min</div>
+<div class="promptbox">Atue como assistente de Marketing Digital.
+
+Negócio: cafeteria de bairro.
+Público: adultos que moram ou trabalham na região.
+Objetivo: aumentar o movimento aos sábados à tarde.
+Canal: Instagram e WhatsApp.
+
+Sugira 5 ações de baixo custo.
+Para cada ação, informe ideia, canal, objetivo e dificuldade.
+Não invente informações ausentes.</div>
+</div>
+<div class="workfield"><label>O que mudou em relação ao primeiro teste?</label><textarea placeholder="Compare as duas respostas..."></textarea></div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Conceito 5</div>
+<h2>Machine Learning: aprender padrões a partir de dados</h2>
+
+<div class="grid g3">
+<div class="card"><strong>Supervisionado</strong><p class="muted">Aprende com exemplos rotulados.</p></div>
+<div class="card"><strong>Não supervisionado</strong><p class="muted">Agrupa e encontra padrões sem rótulos prévios.</p></div>
+<div class="card"><strong>Reforço</strong><p class="muted">Aprende por tentativa, recompensa e ajuste.</p></div>
+</div>
+<div class="practice-card" style="margin-top:12px"><div class="practice-tag">Pense rápido</div>
+<p>Qual desses casos parece ML? Recomendação de produto · agrupamento de clientes · previsão de demanda.</p>
+<div class="workfield"><textarea data-label="Quais casos são ML e de que tipo" placeholder="Ex.: agrupamento de clientes → não supervisionado..."></textarea></div>
+</div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Conceito 6</div>
+<h2>Visão Computacional</h2>
+
+<div class="mini-flow"><div class="box">Pixels</div><div class="arrow">→</div><div class="box">Padrões</div><div class="arrow">→</div><div class="box">Formas</div><div class="arrow">→</div><div class="box">Objetos</div></div>
+<div class="practice-card"><div class="practice-tag">Faça agora · 3 min</div>
+<p>Imagine uma câmera numa loja. O que ela precisaria <strong style="display:inline">classificar</strong>, <strong style="display:inline">detectar</strong> ou <strong style="display:inline">contar</strong>?</p>
+<div class="workfield"><textarea data-label="O que a câmera classificaria, detectaria ou contaria" placeholder="Ex.: pessoas, produtos, filas..."></textarea></div>
+</div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Conceito 7</div>
+<h2>NLP e linguagem</h2>
+
+<div class="grid g3">
+<div class="card"><strong>Classificar</strong><p class="muted">Ex.: comentário positivo/negativo.</p></div>
+<div class="card"><strong>Resumir</strong><p class="muted">Reduzir texto preservando ideia central.</p></div>
+<div class="card"><strong>Gerar</strong><p class="muted">Criar resposta, roteiro ou copy.</p></div>
+</div>
+<div class="practice-card" style="margin-top:12px"><div class="practice-tag">Faça agora · 3 min</div>
+<p>Peça à IA: “Reescreva esta frase para um cliente iniciante entender.” Use uma frase técnica do seu trabalho.</p>
+<div class="workfield"><textarea data-label="Frase original e versão da IA" placeholder="Original: ...&#10;Versão da IA: ..."></textarea></div>
+</div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">História em 1 tela</div>
+<h2>Da ideia de máquina inteligente à IA generativa</h2>
+
+<div class="timeline">
+<div class="event"><div class="year">1950</div><strong>Turing</strong><p>Discussão sobre máquinas e inteligência.</p></div>
+<div class="event"><div class="year">1956</div><strong>Dartmouth</strong><p>Marco do campo de IA.</p></div>
+<div class="event"><div class="year">1997</div><strong>Deep Blue</strong><p>Computação especializada em xadrez.</p></div>
+<div class="event"><div class="year">2012+</div><strong>Deep Learning</strong><p>Grandes avanços em visão e linguagem.</p></div>
+<div class="event"><div class="year">Hoje</div><strong>IA generativa</strong><p>Texto, imagem, áudio, vídeo e código.</p></div>
+</div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Conceito 8</div>
+<h2>ANI, AGI e ASI</h2>
+
+<div class="grid g3">
+<div class="card"><strong>ANI</strong><p class="muted">IA especializada em tarefas específicas.</p></div>
+<div class="card"><strong>AGI</strong><p class="muted">Ideia de inteligência geral comparável à humana em ampla variedade de tarefas.</p></div>
+<div class="card"><strong>ASI</strong><p class="muted">Conceito hipotético de superinteligência.</p></div>
+</div>
+<div class="practice-card" style="margin-top:12px"><div class="practice-tag">Faça agora</div><p>Classifique os exemplos vistos hoje: quais são ANI? Há algum exemplo de AGI real na aula?</p>
+<div class="workfield"><textarea data-label="ANI, AGI ou ASI nos exemplos da aula" placeholder="Seus exemplos e a classificação..."></textarea></div></div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Conceito 9</div>
+<h2>Alucinação: uma resposta convincente pode estar errada</h2>
+
+<div class="warning"><b>Problema:</b> modelos podem completar lacunas com algo plausível, mas incorreto.</div>
+<div class="practice-card" style="margin-top:12px"><div class="practice-tag">Faça agora · 5 min</div>
+<div class="promptbox">Para as ideias que você recomendou, quais dados atuais comprovam que elas funcionariam no Brasil?
+
+Informe fonte e ano.
+Diferencie FATO de HIPÓTESE.
+Não invente números.
+Se faltar evidência, escreva “PRECISA SER PESQUISADO”.</div>
+<div class="workfield"><label>O que a IA marcou como hipótese ou “precisa ser pesquisado”?</label><textarea placeholder="Anote o que precisa de fonte..."></textarea></div>
+</div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Análise da prática</div>
+<h2>O que aprendemos com os dois testes?</h2>
+
+<div class="microcheck">
+<div class="item"><strong>Prompt 1</strong><p class="muted">Pouco contexto → resposta ampla.</p></div>
+<div class="item"><strong>Prompt 2</strong><p class="muted">Mais contexto → resposta mais direcionada.</p></div>
+<div class="item"><strong>Verificação</strong><p class="muted">Boa escrita não garante verdade.</p></div>
+<div class="item"><strong>Responsabilidade</strong><p class="muted">A pessoa ainda precisa avaliar e decidir.</p></div>
+</div>
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Mini-entrega</div>
+<h2>Feche a Aula 1 com um registro simples</h2>
+
+<div class="grid g3">
+<div class="card"><strong>Negócio escolhido</strong><p class="muted">Será usado nas próximas aulas.</p></div>
+<div class="card"><strong>Prompt 1 × Prompt 2</strong><p class="muted">Guarde a comparação.</p></div>
+<div class="card"><strong>Uma verificação</strong><p class="muted">Anote algo que exigiu fonte.</p></div>
+</div>
+<div class="workfield">
+<label>Negócio escolhido (confirme)</label><input placeholder="Ex.: cafeteria de bairro">
+<label>Principal diferença entre Prompt 1 e Prompt 2</label><textarea placeholder="Em 2 ou 3 frases"></textarea>
+<label>Uma informação que exigiu fonte</label><input placeholder="Ex.: dado sobre consumo de café no Brasil">
+</div>
+
+
+</div></section><section class="slide"><div class="panel big">
+<div class="kicker">Microquiz final</div><h2>5 perguntas para fechar a aula</h2>
+<div id="quizArea" class="quiz-mini"></div><div class="quiz-msg" id="quizMsg"></div>
+<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:15px">
+<button id="quizPrev">Anterior</button><button class="primary" id="quizNext">Próxima</button>
+</div>
+</div></section><section class="slide"><div class="panel big center">
+<div class="kicker">Fechamento</div><h1>Aula 1 concluída</h1>
+<p class="lead" style="margin:0 auto 20px">Você aprendeu o conceito e já aplicou durante a própria aula.</p>
+<div id="scoreBox"></div>
+<div class="quote" style="text-align:left">Próxima aula: vamos pegar o mesmo negócio e entender seus 4Ps, canais e objetivo de Marketing.</div>
+<div class="savebox"><strong>Guarde suas respostas</strong><p class="muted">Elas ficam salvas só neste navegador. Em computador do laboratório, baixe o arquivo antes de sair e depois clique em “Apagar respostas”.</p><div class="rowbtns"><button class="primary" data-action="download">Baixar respostas (.txt)</button><button data-action="clear">Apagar respostas deste computador</button></div></div>
+</div></section>
+</main>
+<footer>
+  <div class="progressWrap">
+    <div class="progressInfo"><span id="slideCounter"></span><span id="pct"></span></div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+  </div>
+  <span class="saveinfo" id="saveInfo"></span>
+  <div class="nav"><button id="prev">← Anterior</button><button class="primary" id="next">Próximo →</button></div>
+</footer>
+</div>
+<script>
+const AULA=1, AULA_TITULO="Fundamentos de IA";
+/* ---------- Fundo animado (leve, pausa quando a aba está oculta) ---------- */
+const canvas=document.getElementById('matrix'),ctx=canvas.getContext('2d');
+let drops=[],fontSize=15,lastFrame=0;
+const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function resize(){
+ canvas.width=innerWidth;canvas.height=innerHeight;
+ drops=Array(Math.floor(canvas.width/fontSize)).fill(1).map(()=>Math.random()*-60);
+}
+function drawMatrix(t){
+ requestAnimationFrame(drawMatrix);
+ if(document.hidden||t-lastFrame<55)return;
+ lastFrame=t;
+ ctx.fillStyle='rgba(0,8,5,.075)';ctx.fillRect(0,0,canvas.width,canvas.height);
+ ctx.fillStyle='#19e978';ctx.font=fontSize+'px monospace';
+ const chars='01AIMARKETINGPROMPTSEO';
+ drops.forEach((y,i)=>{
+  ctx.fillText(chars[Math.floor(Math.random()*chars.length)],i*fontSize,y*fontSize);
+  if(y*fontSize>canvas.height&&Math.random()>.977)drops[i]=0;
+  drops[i]++;
+ });
+}
+resize();addEventListener('resize',resize);
+if(!reduceMotion)requestAnimationFrame(drawMatrix);
+
+/* ---------- Navegação ---------- */
+const slides=[...document.querySelectorAll('.slide')];
+let current=0;
+const prev=document.getElementById('prev'),next=document.getElementById('next');
+function show(i){
+ current=Math.max(0,Math.min(i,slides.length-1));
+ slides.forEach((s,n)=>s.classList.toggle('active',n===current));
+ document.getElementById('slideCounter').textContent=`${current+1} / ${slides.length}`;
+ const p=Math.round(current/(slides.length-1)*100);
+ document.getElementById('pct').textContent=p+'%';
+ document.getElementById('bar').style.width=p+'%';
+ prev.disabled=current===0;
+ next.textContent=current===slides.length-1?'Voltar ao início ↺':'Próximo →';
+}
+prev.onclick=()=>show(current-1);
+next.onclick=()=>current===slides.length-1?show(0):show(current+1);
+document.addEventListener('keydown',e=>{
+ const t=e.target;
+ if(t&&(t.matches('input,textarea,select,[contenteditable="true"]')))return; // não troca de slide enquanto o aluno digita
+ if(e.key==='ArrowRight')show(current+1);
+ if(e.key==='ArrowLeft')show(current-1);
+});
+document.getElementById('fullscreenBtn').onclick=()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen()};
+
+/* ---------- Respostas: salvamento automático + download ---------- */
+const KEY='mkt-ia-aula'+AULA;
+const fields=[...document.querySelectorAll('main input, main textarea, main select')];
+let store={};
+try{store=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){store={}}
+const info=document.getElementById('saveInfo');
+function fieldLabel(el){
+ const s=el.closest('.slide');
+ const h=s?s.querySelector('h2,h1'):null;
+ let lab=el.dataset.label||'';
+ if(!lab){
+  if(el.type==='checkbox'){lab=el.parentElement.textContent.trim()}
+  else{const p=el.previousElementSibling;lab=(p&&p.tagName==='LABEL')?p.textContent.trim():(el.placeholder||'Resposta')}
+ }
+ return {slide:h?h.textContent.trim():'',label:lab};
+}
+fields.forEach((el,i)=>{
+ el.dataset.k='f'+i;
+ if(store['f'+i]!==undefined){ if(el.type==='checkbox')el.checked=!!store['f'+i]; else el.value=store['f'+i]; }
+ el.addEventListener(el.type==='checkbox'?'change':'input',()=>{
+  store['f'+i]=el.type==='checkbox'?el.checked:el.value;
+  try{localStorage.setItem(KEY,JSON.stringify(store));info.textContent='Respostas salvas neste navegador ✓'}
+  catch(e){info.textContent='Não foi possível salvar automaticamente. Use “Baixar respostas”.'}
+  if(typeof updateBuilder==='function')updateBuilder();
+ });
+});
+function exportText(){
+ let out=`${document.querySelector('.titlebox b').textContent} — Aula ${AULA}: ${AULA_TITULO}\nGerado em: ${new Date().toLocaleString('pt-BR')}\n`;
+ let lastSlide='';
+ fields.forEach(el=>{
+  const v=el.type==='checkbox'?(el.checked?'[x]':'[ ]'):el.value.trim();
+  if(el.type!=='checkbox'&&!v)return;
+  const {slide,label}=fieldLabel(el);
+  if(slide!==lastSlide){out+=`\n=== ${slide} ===\n`;lastSlide=slide}
+  out+=el.type==='checkbox'?`${v} ${label}\n`:`• ${label}\n${v}\n\n`;
+ });
+ const fp=document.getElementById('promptFinal');
+ if(fp&&fp.textContent.trim())out+=`\n=== Prompt montado ===\n${fp.textContent}\n`;
+ return out;
+}
+function download(){
+ const blob=new Blob([exportText()],{type:'text/plain;charset=utf-8'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+ a.download=`Aula${AULA}_minhas_respostas.txt`;document.body.appendChild(a);a.click();
+ setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+}
+function clearAll(){
+ if(!confirm('Apagar todas as respostas desta aula neste computador?'))return;
+ store={};try{localStorage.removeItem(KEY)}catch(e){}
+ fields.forEach(el=>{if(el.type==='checkbox')el.checked=false;else el.value=''});
+ info.textContent='Respostas apagadas.';
+ if(typeof updateBuilder==='function')updateBuilder();
+}
+document.querySelectorAll('[data-action="download"]').forEach(b=>b.onclick=download);
+document.querySelectorAll('[data-action="clear"]').forEach(b=>b.onclick=clearAll);
+
+/* ---------- Montador de prompt (usado na Aula 3) ---------- */
+const builderOut=document.getElementById('promptFinal');
+function updateBuilder(){
+ if(!builderOut)return;
+ const order=[['papel',''],['contexto','Contexto: '],['dados','Dados: '],['objetivo','Objetivo: '],['tarefa','Tarefa: '],['publico','Público: '],['canal','Canal: '],['formato','Formato da resposta: '],['restricoes','Restrições:\n']];
+ const parts=order.map(([k,pre])=>{
+  const v=[...document.querySelectorAll(`[data-part="${k}"]`)].map(e=>e.value.trim()).filter(Boolean).join('\n');
+  return v?pre+v:'';
+ }).filter(Boolean);
+ builderOut.textContent=parts.length?parts.join('\n\n'):'Preencha os campos dos slides anteriores para montar o prompt aqui.';
+}
+updateBuilder();
+const copyBtn=document.getElementById('copyPrompt');
+if(copyBtn)copyBtn.onclick=()=>{navigator.clipboard.writeText(builderOut.textContent).then(()=>{copyBtn.textContent='Copiado ✓';setTimeout(()=>copyBtn.textContent='Copiar prompt',1500)})};
+
+/* ---------- Microquiz (alternativas embaralhadas) ---------- */
+const quizBase=[{"q": "Qual mudança mais ajudou no segundo prompt?", "a": ["Mais contexto", "Mais emojis", "Texto maior sempre", "Trocar de navegador"], "c": 0}, {"q": "IA generativa é usada para...", "a": ["Criar novas saídas", "Somente calcular impostos", "Apenas detectar spam", "Somente armazenar arquivos"], "c": 0}, {"q": "Uma resposta bem escrita pode estar errada?", "a": ["Sim", "Não", "Só em imagem", "Só em áudio"], "c": 0}, {"q": "Visão computacional trabalha com...", "a": ["Imagens e padrões visuais", "Somente áudio", "Apenas planilhas", "Só e-mail"], "c": 0}, {"q": "Prompt melhor garante verdade?", "a": ["Não", "Sim", "Sempre", "Somente em marketing"], "c": 0}];
+if(document.getElementById('quizArea')){
+const quiz=quizBase.map(x=>{
+ const idx=x.a.map((_,i)=>i);
+ for(let i=idx.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]]}
+ return {q:x.q,a:idx.map(i=>x.a[i]),c:idx.indexOf(x.c)};
+});
+let qi=0,answers=Array(quiz.length).fill(null);
+const area=document.getElementById('quizArea'),qprev=document.getElementById('quizPrev'),qnext=document.getElementById('quizNext'),qmsg=document.getElementById('quizMsg');
+function renderQuiz(){
+ const x=quiz[qi];
+ area.innerHTML=`<div class="question"><b>Questão ${qi+1}/${quiz.length}</b><br>${x.q}</div>
+ <div class="answers">${x.a.map((v,i)=>`<div class="answer ${answers[qi]===i?'selected':''}" data-i="${i}" role="button" tabindex="0">${String.fromCharCode(65+i)}. ${v}</div>`).join('')}</div>`;
+ area.querySelectorAll('.answer').forEach(el=>{
+  const pick=()=>{answers[qi]=+el.dataset.i;qmsg.textContent='';renderQuiz()};
+  el.onclick=pick;el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick()}};
+ });
+ qprev.disabled=qi===0;qnext.textContent=qi===quiz.length-1?'Ver resultado':'Próxima';
+}
+qprev.onclick=()=>{if(qi>0){qi--;renderQuiz()}};
+qnext.onclick=()=>{
+ if(answers[qi]===null){qmsg.textContent='Selecione uma resposta para continuar.';return}
+ if(qi<quiz.length-1){qi++;renderQuiz();return}
+ const score=quiz.reduce((s,x,i)=>s+(answers[i]===x.c?1:0),0);
+ document.getElementById('scoreBox').innerHTML=`<div class="card"><div class="result">${score}/${quiz.length}</div><p>Aproveitamento: ${Math.round(score/quiz.length*100)}%</p></div>`;
+ show(slides.length-1);
+};
+renderQuiz();
+}
+show(0);
+
+</script>
+</body>
+</html>
