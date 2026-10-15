@@ -11,7 +11,7 @@ Material do aluno do curso **IA aplicadas ao Marketing Digital**. São 5 encontr
 | 00 | Encontro 1 | Apresentação do curso | [Abrir](aula-00/) |
 | 01 | Encontro 1 | Fundamentos de IA | [Abrir](aula-01/) |
 | 02 | Encontro 1 | Marketing Digital e 4Ps | [Abrir](aula-02/) |
-| 03 | Encontro 2 | Engenharia de Prompt | 🔒 abre em 15/10 |
+| 03 | Encontro 2 | Engenharia de Prompt | [Abrir](aula-03/) |
 | 04 | Encontro 3 | Persona, Inbound e AIDA | 🔒 abre em 16/10 |
 | 05 | Encontro 4 | SEO e Palavras-chave | 🔒 abre em 17/10 |
 | 06 | Encontro 5 | IA para Comunicação | 🔒 abre em 18/10 |
