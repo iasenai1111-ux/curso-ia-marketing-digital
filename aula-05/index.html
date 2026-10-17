@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Aula 5 — Aluno — SEO e Palavras-Chave</title>
+<style>
+:root{
+  --bg:#020806; --panel:rgba(3,24,16,.90); --panel2:rgba(5,35,23,.94);
+  --green:#21ff8b; --green2:#79ffb7; --text:#eafff2; --muted:#a5cbb6;
+  --line:rgba(33,255,139,.28); --red:#e30613; --yellow:#ffe26e; --pink:#ff4e91;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--text)}
+#matrix{position:fixed;inset:0;z-index:0;opacity:.24}
+.app{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column}
+header{
+ height:66px;padding:0 24px;display:flex;align-items:center;gap:16px;
+ background:rgba(0,8,5,.9);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)
+}
+.brand{background:var(--red);font-weight:900;font-size:21px;padding:9px 14px;letter-spacing:.7px}
+.titlebox{min-width:0}.titlebox b{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.titlebox span{font-size:11px;color:var(--muted)}
+.controls{margin-left:auto;display:flex;align-items:center;gap:9px;flex:0 0 auto}
+button{
+ border:1px solid var(--line);background:#062417;color:var(--text);padding:9px 13px;border-radius:7px;cursor:pointer;font-weight:700
+}
+button:hover{background:#0a3422}
+button.primary{background:#0c653a;border-color:#1cf07c}
+button:disabled{opacity:.35;cursor:not-allowed}
+main{position:relative;flex:1}
+.slide{
+ position:absolute;inset:0;padding:24px 36px 82px;overflow:auto;
+ opacity:0;transform:translateX(25px) scale(.99);pointer-events:none;transition:.25s ease
+}
+.slide.active{opacity:1;transform:none;pointer-events:auto}
+.panel{
+ max-width:1180px;margin:0 auto;background:linear-gradient(180deg,var(--panel2),var(--panel));
+ border:1px solid var(--line);box-shadow:0 0 55px rgba(0,255,120,.08);
+ border-radius:9px;padding:22px 24px
+}
+.panel.big{min-height:72vh}
+.kicker{font-size:12px;color:var(--green);letter-spacing:2px;text-transform:uppercase;font-weight:900;margin-bottom:10px}
+h1{font-size:clamp(32px,3.25vw,46px);line-height:1.05;margin:0 0 14px;overflow-wrap:break-word}
+h2{font-size:clamp(24px,2.35vw,33px);line-height:1.12;margin:0 0 14px;overflow-wrap:break-word}
+h3{font-size:18px;line-height:1.2;margin:0 0 7px;color:#fff;overflow-wrap:break-word}
+p{font-size:15.5px;line-height:1.42;margin:7px 0;color:#e3f7eb;overflow-wrap:break-word}
+.lead{font-size:19.5px;line-height:1.42;color:#fff;max-width:920px}
+.muted{color:var(--muted)}
+.small{font-size:12.5px;line-height:1.35;color:var(--muted)}
+.grid{display:grid;gap:12px;min-width:0}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{
+ border:1px solid var(--line);background:rgba(0,15,9,.62);border-radius:8px;padding:14px;min-height:96px;min-width:0;overflow-wrap:break-word
+}
+.card strong{display:block;color:var(--green2);font-size:16px;line-height:1.2;margin-bottom:6px;overflow-wrap:break-word}
+.card .value{font-size:clamp(29px,3vw,42px);font-weight:900;color:var(--green);line-height:1;margin-bottom:7px}
+.tag{display:inline-block;color:var(--green);border:1px solid var(--line);padding:5px 8px;border-radius:999px;font-size:11px;margin:2px 4px 2px 0}
+.quote{border-left:4px solid var(--green);background:rgba(0,0,0,.35);padding:12px 15px;font-size:18px;line-height:1.35;margin:14px 0;overflow-wrap:break-word}
+.note{border:1px dashed rgba(255,226,110,.45);background:rgba(55,48,0,.24);padding:10px 13px;border-radius:7px;color:#fff8c5;margin-top:10px;font-size:13px;line-height:1.35;overflow-wrap:break-word}
+.note b{color:var(--yellow)}
+.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:28px;align-items:center;min-height:62vh}
+.marketing-orb{
+ width:250px;height:250px;border-radius:50%;display:grid;place-items:center;margin:auto;
+ border:1px solid var(--green);box-shadow:0 0 80px rgba(33,255,139,.2),inset 0 0 55px rgba(33,255,139,.08);
+ position:relative;font-weight:900;font-size:50px;color:var(--green);text-align:center
+}
+.marketing-orb:before,.marketing-orb:after{content:"";position:absolute;border:1px solid var(--line);border-radius:50%}
+.marketing-orb:before{inset:35px}.marketing-orb:after{inset:72px}
+.flow{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:14px}
+.flow .box{padding:10px 12px;background:#041b11;border:1px solid var(--line);border-radius:7px;font-weight:800;font-size:14px;overflow-wrap:break-word}
+.arrow{color:var(--green);font-size:25px}
+.timeline{position:relative;padding-left:33px}
+.timeline:before{content:"";position:absolute;left:11px;top:4px;bottom:4px;width:2px;background:rgba(33,255,139,.3)}
+.event{position:relative;margin:0 0 10px;padding:11px 14px;background:rgba(0,16,9,.72);border:1px solid var(--line);border-radius:7px}
+.event:before{content:"";position:absolute;left:-29px;top:18px;width:12px;height:12px;border-radius:50%;background:var(--green);box-shadow:0 0 15px var(--green)}
+.year{color:var(--green);font-weight:900;font-size:16px}
+.bignum{font-size:34px;color:var(--green);font-weight:900}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.term{font-size:25px;color:var(--green);font-weight:900}
+.example{border-top:1px solid var(--line);margin-top:10px;padding-top:10px;color:#d8efe2}
+.diagram{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;align-items:stretch;margin-top:14px}
+.diagram .stage{padding:11px;border:1px solid var(--line);background:#03190f;border-radius:7px;text-align:center}
+.practice{font-family:Consolas,monospace;white-space:pre-wrap;background:#000a05;border:1px solid var(--line);padding:12px;font-size:13px;line-height:1.35;overflow-wrap:anywhere;border-radius:7px;color:#dffdeb}
+.barlist{display:grid;gap:11px;margin-top:12px}
+.barrow{display:grid;grid-template-columns:150px 1fr 70px;gap:10px;align-items:center;font-size:13px}
+.track{height:16px;background:#07150f;border:1px solid rgba(33,255,139,.2);border-radius:999px;overflow:hidden}
+.fill{height:100%;background:linear-gradient(90deg,#0c8b4b,var(--green));border-radius:999px}
+.statline{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.pyramid{display:grid;gap:6px;max-width:880px;margin:12px auto 0}
+.level{margin:auto;padding:10px 14px;text-align:center;border:1px solid var(--line);background:#03190f;border-radius:7px;font-weight:800}
+.level:nth-child(1){width:100%}.level:nth-child(2){width:88%}.level:nth-child(3){width:76%}.level:nth-child(4){width:64%}
+.level:nth-child(5){width:52%}.level:nth-child(6){width:40%}.level:nth-child(7){width:30%}
+.question{font-size:20px;margin-bottom:14px}.answers{display:grid;gap:9px}
+.answer{padding:12px 14px;border:1px solid var(--line);background:#03190f;border-radius:7px;cursor:pointer}
+.answer:hover,.answer.selected{background:#074026;border-color:var(--green)}
+.result{font-size:42px;font-weight:900;color:var(--green)}
+footer{
+ position:absolute;bottom:0;left:0;right:0;height:66px;background:rgba(0,8,5,.94);border-top:1px solid var(--line);
+ display:flex;align-items:center;padding:0 24px;z-index:4
+}
+.progressWrap{width:280px}.progressInfo{font-size:10px;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:5px}
+.progress{height:5px;background:#092017;border-radius:99px;overflow:hidden}.bar{height:100%;background:var(--green);width:0}
+.nav{margin-left:auto;display:flex;gap:8px}
+.teacher-only{display:none}.teacher-mode .teacher-only{display:block}
+.center{text-align:center}
+.source{font-size:11px;color:#86b89b;margin-top:8px}
+.warning{border-left:4px solid var(--yellow);background:rgba(70,56,0,.26);padding:11px 14px;border-radius:6px;margin:12px 0}
+@media(max-width:900px){
+ .g2,.g3,.g4,.hero,.compare,.diagram,.statline{grid-template-columns:1fr}
+ .slide{padding:20px 16px 82px}.marketing-orb{width:200px;height:200px;font-size:40px}
+ .progressWrap{display:none}.barrow{grid-template-columns:100px 1fr 55px}
+}
+@media(max-height:760px){
+ .slide{padding-top:16px}.panel{padding:16px 18px}.panel.big{min-height:auto}
+ p{font-size:14px}.lead{font-size:18px}.card{padding:11px;min-height:82px}
+ h1{font-size:clamp(30px,3vw,41px)}h2{font-size:clamp(23px,2.2vw,30px)}
+}
+
+.prompt-orb{
+ width:250px;height:250px;border-radius:50%;display:grid;place-items:center;margin:auto;
+ border:1px solid var(--green);box-shadow:0 0 80px rgba(33,255,139,.2),inset 0 0 55px rgba(33,255,139,.08);
+ position:relative;font-weight:900;font-size:44px;color:var(--green);text-align:center
+}
+.prompt-orb:before,.prompt-orb:after{content:"";position:absolute;border:1px solid var(--line);border-radius:50%}
+.prompt-orb:before{inset:35px}.prompt-orb:after{inset:72px}
+.code-label{font-size:11px;text-transform:uppercase;letter-spacing:1.4px;color:var(--green);margin-bottom:6px;font-weight:900}
+.bad{border-color:rgba(255,90,90,.45)!important;background:rgba(70,10,10,.30)!important}
+.good{border-color:rgba(33,255,139,.45)!important}
+.bad strong{color:#ff9292!important}
+.builder{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.builder label{display:block;font-size:12px;color:var(--green2);font-weight:800;margin-bottom:5px}
+.builder input,.builder textarea,.builder select{
+ width:100%;background:#001008;color:var(--text);border:1px solid var(--line);border-radius:7px;
+ padding:9px 10px;font:13px Arial,Helvetica,sans-serif;outline:none
+}
+.builder textarea{min-height:74px;resize:vertical}
+.builder input:focus,.builder textarea:focus,.builder select:focus{border-color:var(--green)}
+.builder-output{
+ white-space:pre-wrap;background:#000a05;border:1px solid var(--line);border-radius:7px;
+ padding:12px;font:13px/1.42 Consolas,monospace;min-height:260px;color:#dffdeb;overflow:auto
+}
+.checkgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.checkitem{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);background:#03190f;border-radius:7px;padding:11px}
+.checkdot{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#0c653a;color:#fff;font-weight:900;flex:0 0 auto}
+.meter{display:grid;grid-template-columns:160px 1fr;gap:10px;align-items:center;margin:8px 0}
+.meter .track{height:12px}
+.highlight{color:var(--green);font-weight:900}
+@media(max-width:900px){.builder,.checkgrid{grid-template-columns:1fr}.prompt-orb{width:200px;height:200px;font-size:36px}.meter{grid-template-columns:110px 1fr}}
+
+/* --- Modo oficina: explica -> pratica --- */
+.practice-card{
+  border:1px solid rgba(255,190,70,.45);
+  background:rgba(65,38,0,.30);
+  border-radius:10px;padding:14px;
+}
+.practice-tag{
+  display:inline-block;padding:5px 9px;border-radius:999px;
+  border:1px solid rgba(255,190,70,.45);color:#ffd18a;
+  background:rgba(70,40,0,.35);font-weight:900;font-size:11px;
+  letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;
+}
+.mini-flow{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin:14px 0}
+.mini-flow .box{border:1px solid var(--line);background:#03190f;border-radius:7px;padding:10px 12px;font-weight:800}
+.mini-flow .arrow{color:var(--green);font-size:20px;font-weight:900}
+.promptbox{
+  white-space:pre-wrap;background:#000a05;border:1px solid var(--line);
+  border-radius:7px;padding:12px;font:13px/1.42 Consolas,monospace;
+  color:#dffdeb;overflow:auto;max-height:36vh
+}
+.workfield label{display:block;color:var(--green2);font-size:12px;font-weight:800;margin:7px 0 5px}
+.workfield input,.workfield textarea,.workfield select{
+  width:100%;background:#001008;color:var(--text);border:1px solid var(--line);
+  border-radius:7px;padding:9px 10px;font:13px Arial,Helvetica,sans-serif;outline:none
+}
+.workfield textarea{min-height:82px;resize:vertical}
+.workfield input:focus,.workfield textarea:focus,.workfield select:focus{border-color:var(--green)}
+.teacher-only{display:none!important}
+.teacher-mode .teacher-only{display:block!important}
+.teacher-note{
+  border-left:4px solid #ffb347;background:rgba(60,35,0,.35);
+  padding:10px 12px;border-radius:7px;margin-top:12px;color:#ffe7be
+}
+.microcheck{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.microcheck .item{border:1px solid var(--line);background:#03190f;border-radius:7px;padding:10px}
+.stage-title{font-size:12px;color:#ffd18a;font-weight:900;letter-spacing:1px;text-transform:uppercase}
+.quiz-mini .answer{cursor:pointer}
+@media(max-width:900px){
+ .microcheck{grid-template-columns:1fr}
+ .slide{padding:16px 14px 82px}
+ .panel{padding:16px}
+ .promptbox{max-height:none}
+}
+
+/* --- Correções e componentes que faltavam --- */
+.practice-card{font-size:15.5px;line-height:1.42;color:#e3f7eb}
+.card{font-size:15.5px;line-height:1.42}
+.practice-card ul{margin:8px 0 0 18px;padding:0}
+.badge{display:inline-block;border:1px solid var(--line);background:#03190f;border-radius:999px;padding:5px 10px;margin:3px 4px 3px 0;font-size:13px;font-weight:700}
+
+.journey{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}
+.journey .step{border:1px solid var(--line);background:#03190f;border-radius:8px;padding:14px;text-align:center;position:relative}
+.journey .step strong{color:var(--green2);font-size:16px}
+.journey .n{width:34px;height:34px;border-radius:50%;margin:0 auto 8px;display:grid;place-items:center;background:#0c653a;color:#fff;font-weight:900}
+
+.aida{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}
+.aida .a{border:1px solid var(--line);background:#03190f;border-radius:8px;padding:16px;text-align:center}
+.aida .letter{font-size:44px;font-weight:900;color:var(--green);line-height:1;margin-bottom:6px}
+.aida strong{color:var(--green2);font-size:16px}
+
+.intent-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}
+.intent-card{border:1px solid var(--line);background:#03190f;border-radius:8px;padding:14px;text-align:center}
+.intent-card .ico{width:42px;height:42px;border-radius:8px;margin:0 auto 8px;display:grid;place-items:center;background:#0c653a;color:#fff;font-weight:900;font-size:20px}
+.intent-card strong{color:var(--green2);font-size:16px;display:block}
+.intent-card p{font-size:13px;color:var(--muted);margin:6px 0 0}
+
+.tail-wrap{display:grid;gap:8px;margin:14px 0}
+.tail{border:1px solid var(--line);background:#03190f;border-radius:8px;padding:12px 14px;font-size:15px}
+.tail strong{color:var(--green);letter-spacing:1px;margin-right:8px}
+.tail.head{width:40%}.tail.middle{width:68%}.tail.long{width:100%}
+
+.cluster{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.cluster span{border:1px solid var(--line);background:#03190f;border-radius:999px;padding:8px 14px;font-weight:700;color:var(--green2)}
+
+.matrix4{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:14px 0}
+.matrix4>div{padding:10px 12px;border-bottom:1px solid rgba(33,255,139,.15);border-right:1px solid rgba(33,255,139,.15);font-size:14px;background:rgba(0,15,9,.62)}
+.matrix4>div:nth-child(5n){border-right:0}
+.matrix4 .head{background:#0c3f26;color:var(--green2);font-weight:900;text-transform:uppercase;font-size:12px;letter-spacing:1px}
+
+.checklist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.checklist label{display:flex;gap:10px;align-items:center;border:1px solid var(--line);background:#03190f;border-radius:7px;padding:11px;cursor:pointer;font-size:15px}
+.checklist input{width:18px;height:18px;accent-color:#21ff8b}
+
+.builder-final{white-space:pre-wrap;background:#000a05;border:1px solid var(--line);border-radius:7px;padding:12px;font:13px/1.42 Consolas,monospace;color:#dffdeb;min-height:140px;max-height:38vh;overflow:auto}
+.rowbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.savebox{border:1px solid var(--line);background:rgba(0,15,9,.62);border-radius:8px;padding:14px;margin-top:14px;text-align:left}
+.saveinfo{font-size:11px;color:var(--muted);margin-left:14px}
+.quiz-msg{color:var(--yellow);font-size:14px;margin-top:10px;min-height:18px}
+@media(max-width:900px){
+ .journey,.aida,.intent-grid,.checklist{grid-template-columns:1fr 1fr}
+ .matrix4{grid-template-columns:repeat(5,minmax(90px,1fr));overflow-x:auto}
+ .tail.head,.tail.middle{width:100%}
+}
+@media(prefers-reduced-motion:reduce){#matrix{display:none}.slide{transition:none}}
+.timeline .event{padding:8px 14px;margin-bottom:7px}
+.timeline .event .year{display:inline-block;margin-right:10px}
+.timeline .event strong{display:inline}
+.timeline .event p{margin:3px 0 0}
+.timeline .event:before{top:13px}
+
+</style>
+</head>
+<body>
+<canvas id="matrix" aria-hidden="true"></canvas>
+<div class="app" id="app">
+<header>
+  <div class="brand">SENAI</div>
+  <div class="titlebox"><b>IA aplicadas ao Marketing Digital</b><span>Aula 5 — SEO e Palavras-Chave · Modo Oficina</span></div>
+  <div class="controls"><button data-action="download" title="Baixar as respostas desta aula">Baixar respostas</button><button id="fullscreenBtn">Tela cheia</button></div>
+</header>
+<main><section class="slide active">
+<div class="panel big hero">
+<div>
+<div class="kicker">Aula 5 · Modo Oficina</div>
+<h1>SEO e Palavras-Chave<br>pesquisando na prática</h1>
+<p class="lead">O aluno vai criar, classificar e organizar buscas durante a explicação.</p>
+<div class="quote">APRENDE → TESTA → ANALISA → MELHORA → CONTINUA</div>
+</div>
+<div class="prompt-orb" style="width:230px;height:230px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--green);box-shadow:0 0 70px rgba(33,255,139,.18);font-size:31px;font-weight:900;color:var(--green);text-align:center">SEO<br>+ IA</div>
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Conceito 1</div>
+<h2>SEO conecta uma busca a uma resposta útil</h2>
+
+<div class="mini-flow"><div class="box">Busca</div><div class="arrow">→</div><div class="box">Resultado</div><div class="arrow">→</div><div class="box">Clique</div><div class="arrow">→</div><div class="box">Experiência</div></div>
+<div class="practice-card"><div class="practice-tag">Faça agora</div><p>Escreva 5 buscas que alguém faria antes de comprar do seu negócio.</p><div class="workfield"><label>Suas 5 buscas</label><textarea placeholder="1. ...&#10;2. ...&#10;3. ...&#10;4. ...&#10;5. ..."></textarea></div></div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Conceito 2</div>
+<h2>Intenção de busca</h2>
+
+<div class="intent-grid">
+<div class="intent-card"><div class="ico">I</div><strong>Informativa</strong><p>quer aprender: “como escolher café”</p></div>
+<div class="intent-card"><div class="ico">N</div><strong>Navegação</strong><p>quer um site: “cafeteria X instagram”</p></div>
+<div class="intent-card"><div class="ico">C</div><strong>Comercial</strong><p>compara: “melhor cafeteria do bairro”</p></div>
+<div class="intent-card"><div class="ico">T</div><strong>Transacional</strong><p>quer comprar: “pedir café delivery”</p></div>
+</div>
+<div class="practice-card"><div class="practice-tag">Faça agora · 4 min</div><p>Classifique suas 5 buscas.</p><div class="workfield"><label>Busca → intenção</label><textarea placeholder="Ex.: cafeteria aberta sábado → transacional"></textarea></div></div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Conceito 3</div>
+<h2>Head, Middle e Long Tail</h2>
+
+<div class="tail-wrap">
+<div class="tail head"><strong>HEAD</strong> café</div>
+<div class="tail middle"><strong>MIDDLE</strong> cafeteria artesanal</div>
+<div class="tail long"><strong>LONG TAIL</strong> cafeteria artesanal aberta sábado em [bairro]</div><p class="small">Quanto mais longa a busca, menor tende a ser o volume e mais clara a intenção.</p>
+</div>
+<div class="practice-card"><div class="practice-tag">Faça agora</div><p>Classifique suas buscas por amplitude e especificidade.</p><div class="workfield"><label>Busca → head, middle ou long tail</label><textarea placeholder=""></textarea></div></div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Conceito 4</div>
+<h2>Mais volume nem sempre é melhor</h2>
+
+<div class="grid g4">
+<div class="card"><strong>Relevância</strong><p class="muted">Tem a ver com o negócio?</p></div><div class="card"><strong>Intenção</strong><p class="muted">Combina com o objetivo?</p></div><div class="card"><strong>Volume</strong><p class="muted">Quantas pessoas buscam?</p></div><div class="card"><strong>Conversão</strong><p class="muted">Quem busca tende a comprar?</p></div>
+</div>
+<div class="warning"><b>Volume precisa ser medido em ferramenta.</b> A IA não deve inventar o número.</div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Prática 1</div>
+<h2>Expanda a lista com IA</h2>
+
+<div class="promptbox">Atue como assistente de pesquisa de palavras-chave.
+
+Negócio: [preencher]
+Público: [preencher]
+Região: [preencher]
+Minhas buscas iniciais: [colar]
+
+Gere mais 20 hipóteses.
+Classifique intenção e cauda.
+NÃO invente volume.
+Escreva “PRECISA SER MEDIDO” no campo volume.</div>
+<div class="workfield"><label>Lista gerada (cole ou resuma)</label><textarea placeholder=""></textarea></div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Conceito 5</div>
+<h2>Cluster = agrupar buscas que tratam da mesma necessidade</h2>
+
+<div class="cluster"><span>dúvidas</span><span>comparação</span><span>preço</span><span>localização</span><span>compra</span></div>
+<div class="practice-card"><div class="practice-tag">Faça agora</div><p>Agrupe a lista em 3 a 5 clusters.</p><div class="workfield"><label>Clusters</label><textarea placeholder="Cluster 1 – dúvidas: ...&#10;Cluster 2 – preço: ..."></textarea></div></div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Conceito 6</div>
+<h2>Uma página deve responder uma intenção principal</h2>
+
+<div class="compare">
+<div class="card"><strong>Busca informativa</strong><p>Guia, FAQ, tutorial.</p></div>
+<div class="card"><strong>Busca transacional</strong><p>Produto, serviço, agendamento, compra.</p></div>
+</div>
+<div class="practice-card" style="margin-top:12px"><div class="practice-tag">Faça agora</div><p>Escolha 1 termo informativo e diga que página criaria.</p><div class="workfield"><label>Termo informativo</label><input placeholder=""></div><div class="workfield"><label>Página que você criaria</label><input placeholder="Ex.: guia, FAQ, post de blog"></div></div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Conceito 7</div>
+<h2>SEO on-page básico</h2>
+
+<div class="grid g4">
+<div class="card"><strong>Título</strong><p class="muted">Aparece no Google.</p></div><div class="card"><strong>H1</strong><p class="muted">Título principal da página.</p></div><div class="card"><strong>H2</strong><p class="muted">Seções do conteúdo.</p></div><div class="card"><strong>CTA</strong><p class="muted">Próximo passo do leitor.</p></div>
+</div>
+<div class="practice-card" style="margin-top:12px"><div class="practice-tag">Faça agora</div><p>Crie um título + H1 + 3 H2 para a palavra escolhida.</p><div class="workfield"><label>Título, H1 e H2</label><textarea placeholder="Título: ...&#10;H1: ...&#10;H2: ...&#10;H2: ...&#10;H2: ..."></textarea></div></div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Conceito 8</div>
+<h2>Ferramentas validam o que a IA apenas sugere</h2>
+
+<div class="grid g3">
+<div class="card"><strong>Google Trends</strong><p class="muted">Interesse relativo.</p></div>
+<div class="card"><strong>Search Console</strong><p class="muted">Dados do seu site.</p></div>
+<div class="card"><strong>Planejadores SEO</strong><p class="muted">Volume, ideias e concorrência.</p></div>
+</div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Prática 2</div>
+<h2>Valide 2 termos</h2>
+
+<div class="practice-card"><div class="practice-tag">Faça agora · 8 min</div>
+Compare dois termos em uma ferramenta disponível.
+<div class="workfield"><label>O que você observou?</label><textarea placeholder="Interesse, região, formato dos resultados, diferença entre termos..."></textarea></div>
+</div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Conceito 9</div>
+<h2>Priorize o que faz sentido para o negócio</h2>
+
+<div class="microcheck">
+<div class="item"><strong>Relevância</strong></div><div class="item"><strong>Intenção</strong></div><div class="item"><strong>Potencial de conversão</strong></div><div class="item"><strong>Viabilidade</strong></div>
+</div>
+<div class="practice-card" style="margin-top:12px"><div class="practice-tag">Faça agora</div><p>Escolha 5 palavras prioritárias e justifique.</p><div class="workfield"><label>5 prioridades e justificativa</label><textarea placeholder=""></textarea></div></div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Prática integradora</div>
+<h2>Crie a estrutura SEO final</h2>
+
+<div class="promptbox">Palavra principal: [preencher]
+Intenção: [preencher]
+Público: [preencher]
+
+Crie:
+1. título;
+2. H1;
+3. 4 H2;
+4. FAQ;
+5. CTA adequado à intenção;
+6. meta descrição.
+
+Não repita a palavra-chave artificialmente.</div>
+<div class="workfield"><label>Estrutura SEO gerada (cole ou resuma)</label><textarea placeholder=""></textarea></div>
+
+
+</div></section><section class="slide">
+<div class="panel big">
+<div class="kicker">Mini-entrega</div>
+<h2>Sua pesquisa SEO está pronta</h2>
+
+<div class="grid g3"><div class="card"><strong>Lista + intenções</strong></div><div class="card"><strong>Clusters + 5 prioridades</strong></div><div class="card"><strong>Estrutura SEO + validação</strong></div></div>
+
+
+</div></section><section class="slide"><div class="panel big">
+<div class="kicker">Microquiz final</div><h2>5 perguntas para fechar a aula</h2>
+<div id="quizArea" class="quiz-mini"></div><div class="quiz-msg" id="quizMsg"></div>
+<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:15px">
+<button id="quizPrev">Anterior</button><button class="primary" id="quizNext">Próxima</button>
+</div>
+</div></section><section class="slide"><div class="panel big center">
+<div class="kicker">Fechamento</div><h1>Aula 5 concluída</h1>
+<p class="lead" style="margin:0 auto 20px">Você aprendeu o conceito e já aplicou durante a própria aula.</p>
+<div id="scoreBox"></div>
+<div class="quote" style="text-align:left">Próxima aula: vamos transformar toda a estratégia em texto, imagem, vídeo, voz e campanha final.</div>
+<div class="savebox"><strong>Guarde suas respostas</strong><p class="muted">Elas ficam salvas só neste navegador. Em computador do laboratório, baixe o arquivo antes de sair e depois clique em “Apagar respostas”.</p><div class="rowbtns"><button class="primary" data-action="download">Baixar respostas (.txt)</button><button data-action="clear">Apagar respostas deste computador</button></div></div>
+</div></section></main>
+<footer>
+  <div class="progressWrap">
+    <div class="progressInfo"><span id="slideCounter"></span><span id="pct"></span></div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+  </div>
+  <span class="saveinfo" id="saveInfo"></span>
+  <div class="nav"><button id="prev">← Anterior</button><button class="primary" id="next">Próximo →</button></div>
+</footer>
+</div>
+<script>
+const AULA=5, AULA_TITULO="SEO e Palavras-Chave";
+/* ---------- Fundo animado (leve, pausa quando a aba está oculta) ---------- */
+const canvas=document.getElementById('matrix'),ctx=canvas.getContext('2d');
+let drops=[],fontSize=15,lastFrame=0;
+const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function resize(){
+ canvas.width=innerWidth;canvas.height=innerHeight;
+ drops=Array(Math.floor(canvas.width/fontSize)).fill(1).map(()=>Math.random()*-60);
+}
+function drawMatrix(t){
+ requestAnimationFrame(drawMatrix);
+ if(document.hidden||t-lastFrame<55)return;
+ lastFrame=t;
+ ctx.fillStyle='rgba(0,8,5,.075)';ctx.fillRect(0,0,canvas.width,canvas.height);
+ ctx.fillStyle='#19e978';ctx.font=fontSize+'px monospace';
+ const chars='01AIMARKETINGPROMPTSEO';
+ drops.forEach((y,i)=>{
+  ctx.fillText(chars[Math.floor(Math.random()*chars.length)],i*fontSize,y*fontSize);
+  if(y*fontSize>canvas.height&&Math.random()>.977)drops[i]=0;
+  drops[i]++;
+ });
+}
+resize();addEventListener('resize',resize);
+if(!reduceMotion)requestAnimationFrame(drawMatrix);
+
+/* ---------- Navegação ---------- */
+const slides=[...document.querySelectorAll('.slide')];
+let current=0;
+const prev=document.getElementById('prev'),next=document.getElementById('next');
+function show(i){
+ current=Math.max(0,Math.min(i,slides.length-1));
+ slides.forEach((s,n)=>s.classList.toggle('active',n===current));
+ document.getElementById('slideCounter').textContent=`${current+1} / ${slides.length}`;
+ const p=Math.round(current/(slides.length-1)*100);
+ document.getElementById('pct').textContent=p+'%';
+ document.getElementById('bar').style.width=p+'%';
+ prev.disabled=current===0;
+ next.textContent=current===slides.length-1?'Voltar ao início ↺':'Próximo →';
+}
+prev.onclick=()=>show(current-1);
+next.onclick=()=>current===slides.length-1?show(0):show(current+1);
+document.addEventListener('keydown',e=>{
+ const t=e.target;
+ if(t&&(t.matches('input,textarea,select,[contenteditable="true"]')))return; // não troca de slide enquanto o aluno digita
+ if(e.key==='ArrowRight')show(current+1);
+ if(e.key==='ArrowLeft')show(current-1);
+});
+document.getElementById('fullscreenBtn').onclick=()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen()};
+
+/* ---------- Respostas: salvamento automático + download ---------- */
+const KEY='mkt-ia-aula'+AULA;
+const fields=[...document.querySelectorAll('main input, main textarea, main select')];
+let store={};
+try{store=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){store={}}
+const info=document.getElementById('saveInfo');
+function fieldLabel(el){
+ const s=el.closest('.slide');
+ const h=s?s.querySelector('h2,h1'):null;
+ let lab=el.dataset.label||'';
+ if(!lab){
+  if(el.type==='checkbox'){lab=el.parentElement.textContent.trim()}
+  else{const p=el.previousElementSibling;lab=(p&&p.tagName==='LABEL')?p.textContent.trim():(el.placeholder||'Resposta')}
+ }
+ return {slide:h?h.textContent.trim():'',label:lab};
+}
+fields.forEach((el,i)=>{
+ el.dataset.k='f'+i;
+ if(store['f'+i]!==undefined){ if(el.type==='checkbox')el.checked=!!store['f'+i]; else el.value=store['f'+i]; }
+ el.addEventListener(el.type==='checkbox'?'change':'input',()=>{
+  store['f'+i]=el.type==='checkbox'?el.checked:el.value;
+  try{localStorage.setItem(KEY,JSON.stringify(store));info.textContent='Respostas salvas neste navegador ✓'}
+  catch(e){info.textContent='Não foi possível salvar automaticamente. Use “Baixar respostas”.'}
+  if(typeof updateBuilder==='function')updateBuilder();
+ });
+});
+function exportText(){
+ let out=`${document.querySelector('.titlebox b').textContent} — Aula ${AULA}: ${AULA_TITULO}\nGerado em: ${new Date().toLocaleString('pt-BR')}\n`;
+ let lastSlide='';
+ fields.forEach(el=>{
+  const v=el.type==='checkbox'?(el.checked?'[x]':'[ ]'):el.value.trim();
+  if(el.type!=='checkbox'&&!v)return;
+  const {slide,label}=fieldLabel(el);
+  if(slide!==lastSlide){out+=`\n=== ${slide} ===\n`;lastSlide=slide}
+  out+=el.type==='checkbox'?`${v} ${label}\n`:`• ${label}\n${v}\n\n`;
+ });
+ const fp=document.getElementById('promptFinal');
+ if(fp&&fp.textContent.trim())out+=`\n=== Prompt montado ===\n${fp.textContent}\n`;
+ return out;
+}
+function download(){
+ const blob=new Blob([exportText()],{type:'text/plain;charset=utf-8'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+ a.download=`Aula${AULA}_minhas_respostas.txt`;document.body.appendChild(a);a.click();
+ setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+}
+function clearAll(){
+ if(!confirm('Apagar todas as respostas desta aula neste computador?'))return;
+ store={};try{localStorage.removeItem(KEY)}catch(e){}
+ fields.forEach(el=>{if(el.type==='checkbox')el.checked=false;else el.value=''});
+ info.textContent='Respostas apagadas.';
+ if(typeof updateBuilder==='function')updateBuilder();
+}
+document.querySelectorAll('[data-action="download"]').forEach(b=>b.onclick=download);
+document.querySelectorAll('[data-action="clear"]').forEach(b=>b.onclick=clearAll);
+
+/* ---------- Montador de prompt (usado na Aula 3) ---------- */
+const builderOut=document.getElementById('promptFinal');
+function updateBuilder(){
+ if(!builderOut)return;
+ const order=[['papel',''],['contexto','Contexto: '],['dados','Dados: '],['objetivo','Objetivo: '],['tarefa','Tarefa: '],['publico','Público: '],['canal','Canal: '],['formato','Formato da resposta: '],['restricoes','Restrições:\n']];
+ const parts=order.map(([k,pre])=>{
+  const v=[...document.querySelectorAll(`[data-part="${k}"]`)].map(e=>e.value.trim()).filter(Boolean).join('\n');
+  return v?pre+v:'';
+ }).filter(Boolean);
+ builderOut.textContent=parts.length?parts.join('\n\n'):'Preencha os campos dos slides anteriores para montar o prompt aqui.';
+}
+updateBuilder();
+const copyBtn=document.getElementById('copyPrompt');
+if(copyBtn)copyBtn.onclick=()=>{navigator.clipboard.writeText(builderOut.textContent).then(()=>{copyBtn.textContent='Copiado ✓';setTimeout(()=>copyBtn.textContent='Copiar prompt',1500)})};
+
+/* ---------- Microquiz (alternativas embaralhadas) ---------- */
+const quizBase=[{"q": "Busca 'como escolher...' tende a ser...", "a": ["Informativa", "Transacional", "Navegação", "Nenhuma"], "c": 0}, {"q": "Long Tail tende a ser...", "a": ["Mais específica", "Sempre maior volume", "Sem intenção", "Só uma palavra"], "c": 0}, {"q": "A IA deve inventar volume?", "a": ["Não", "Sim", "Sempre", "Só em Long Tail"], "c": 0}, {"q": "Cluster serve para...", "a": ["Agrupar buscas relacionadas", "Criar páginas iguais", "Aumentar texto", "Eliminar CTA"], "c": 0}, {"q": "Uma página deve responder...", "a": ["Uma intenção principal clara", "Todas as intenções ao mesmo tempo", "Nenhuma intenção", "Somente ao algoritmo"], "c": 0}];
+if(document.getElementById('quizArea')){
+const quiz=quizBase.map(x=>{
+ const idx=x.a.map((_,i)=>i);
+ for(let i=idx.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]]}
+ return {q:x.q,a:idx.map(i=>x.a[i]),c:idx.indexOf(x.c)};
+});
+let qi=0,answers=Array(quiz.length).fill(null);
+const area=document.getElementById('quizArea'),qprev=document.getElementById('quizPrev'),qnext=document.getElementById('quizNext'),qmsg=document.getElementById('quizMsg');
+function renderQuiz(){
+ const x=quiz[qi];
+ area.innerHTML=`<div class="question"><b>Questão ${qi+1}/${quiz.length}</b><br>${x.q}</div>
+ <div class="answers">${x.a.map((v,i)=>`<div class="answer ${answers[qi]===i?'selected':''}" data-i="${i}" role="button" tabindex="0">${String.fromCharCode(65+i)}. ${v}</div>`).join('')}</div>`;
+ area.querySelectorAll('.answer').forEach(el=>{
+  const pick=()=>{answers[qi]=+el.dataset.i;qmsg.textContent='';renderQuiz()};
+  el.onclick=pick;el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick()}};
+ });
+ qprev.disabled=qi===0;qnext.textContent=qi===quiz.length-1?'Ver resultado':'Próxima';
+}
+qprev.onclick=()=>{if(qi>0){qi--;renderQuiz()}};
+qnext.onclick=()=>{
+ if(answers[qi]===null){qmsg.textContent='Selecione uma resposta para continuar.';return}
+ if(qi<quiz.length-1){qi++;renderQuiz();return}
+ const score=quiz.reduce((s,x,i)=>s+(answers[i]===x.c?1:0),0);
+ document.getElementById('scoreBox').innerHTML=`<div class="card"><div class="result">${score}/${quiz.length}</div><p>Aproveitamento: ${Math.round(score/quiz.length*100)}%</p></div>`;
+ show(slides.length-1);
+};
+renderQuiz();
+}
+show(0);
+
+</script>
+</body>
+</html>
