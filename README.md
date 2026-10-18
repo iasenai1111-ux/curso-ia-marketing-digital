@@ -14,7 +14,7 @@ Material do aluno do curso **IA aplicadas ao Marketing Digital**. São 5 encontr
 | 03 | Encontro 2 | Engenharia de Prompt | [Abrir](aula-03/) |
 | 04 | Encontro 3 | Persona, Inbound e AIDA | [Abrir](aula-04/) |
 | 05 | Encontro 4 | SEO e Palavras-chave | [Abrir](aula-05/) |
-| 06 | Encontro 5 | IA para Comunicação | 🔒 abre em 18/10 |
+| 06 | Encontro 5 | IA para Comunicação | [Abrir](aula-06/) |
 
 ## Como usar
 
